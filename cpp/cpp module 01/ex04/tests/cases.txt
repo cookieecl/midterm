@@ -1,0 +1,5 @@
+./unnecessary_violence tests/test2.txt hello ""
+./unnecessary_violence tests/test2.txt "" hello
+./unnecessary_violence tests/test2.txt "" ""
+./unnecessary_violence tests/test2.txt hello hello
+./unnecessary_violence tests/test2.txt hello helloo
