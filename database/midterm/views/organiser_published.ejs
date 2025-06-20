@@ -1,0 +1,90 @@
+<h1>Organiser Home Page</h1>
+
+<a href="/organiser/events/create" onclick="event.preventDefault(); document.getElementById('create-form').submit();">
+  <button>Create New Event</button>
+</a>
+
+<form id="create-form" action="/organiser/events/create" method="POST" style="display:none;"></form>
+
+<h2>Published Events</h2>
+<table border="1" cellpadding="5" cellspacing="0">
+  <tr>
+    <th>Title</th>
+    <th>Event description</th>
+    <th>Difficulty</th>
+    <th>Children friendly</th>
+    <th>Date</th>
+    <th>Created At</th>
+    <th>Ticket price</th>
+    <th>Full Price Tickets</th>
+    <th>Child ticket price</th>
+    <th>Child Tickets</th>
+    <th>Tickets booked</th>
+    <th>Actions</th>
+  </tr>
+  <% published.forEach(event => { %>
+    <tr>
+        <td><%= event.title || '(No title)' %></td>
+        <td><%= event.description %></td>
+        <td><%= event.difficulty %></td>
+        <td><%= event.children_friendly %></td>
+        <td><%= event.event_date.split('T')[0] %></td>
+        <td><%= event.created_at.split('T')[0] %></td>
+        <td>$<%= event.full_price_price %></td>
+        <td><%= event.full_price_count %></td>
+        <td>
+          <%= event.children_friendly === 'no' ? '-' : `$${event.child_price}` %>
+        </td>
+        <td>
+          <%= event.children_friendly === 'no' ? '-' : event.child_price_count %>
+        </td>
+        <td><%= event.child_price_count + event.full_price_count %>/<%= event.max_capacity %> (<%= ((event.child_price_count + event.full_price_count) / event.max_capacity * 100).toFixed(2) %>%)</td>
+      <td>
+        <a href="/organiser/events/edit/<%= event.id %>">Details</a> |
+        <form action="/organiser/events/delete/<%= event.id %>" method="POST" style="display:inline;">
+          <button type="submit" onclick="return confirm('Delete this event?');">Delete</button>
+        </form>
+      </td>
+    </tr>
+  <% }); %>
+</table>
+
+<h2>Draft Events</h2>
+<table border="1" cellpadding="5" cellspacing="0">
+  <tr>
+    <th>Title</th>
+    <th>Event description</th>
+    <th>Difficulty</th>
+    <th>Children friendly</th>
+    <th>Date</th>
+    <th>Created At</th>
+    <th>Ticket price</th>
+    <th>Child ticket price</th>
+    <th>Tickets available</th>
+    <th>Actions</th>
+  </tr>
+  <% drafts.forEach(event => { %>
+    <tr>
+      <td><%= event.title || '(No title)' %></td>
+      <td><%= event.description %></td>
+      <td><%= event.difficulty %></td>
+      <td><%= event.children_friendly %></td>
+      <td><%= event.event_date.split('T')[0] %></td>
+      <td><%= event.created_at.split('T')[0] %></td>
+      <td>$<%= event.full_price_price %></td>
+      <td>
+        <%= event.children_friendly === 'no' ? '-' : `$${event.child_price}` %>
+      </td>
+      <td><%= event.max_capacity %></td>
+      <td>
+        <a href="/organiser/events/edit/<%= event.id %>">Edit</a> |
+        <form action="/organiser/events/publish/<%= event.id %>" method="POST" style="display:inline;">
+          <button type="submit">Publish</button>
+        </form> |
+        <form action="/organiser/events/delete/<%= event.id %>" method="POST" style="display:inline;">
+          <button type="submit" onclick="return confirm('Delete this draft?');">Delete</button>
+        </form>
+      </td>
+    </tr>
+  <% }); %>
+</table>

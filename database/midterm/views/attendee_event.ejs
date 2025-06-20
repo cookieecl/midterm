@@ -1,0 +1,49 @@
+<h1>Attendee Event Page</h1>
+
+<h2><%= event.title %></h2>
+<p><%= event.description %></p>
+<p><strong>Date:</strong> <%= event.event_date %></p>
+<p><strong>Difficulty:</strong> <%= event.difficulty %></p>
+<p><strong>Available tickets:</strong> <%= event.max_capacity - event.child_price_count - event.full_price_count %></p>
+
+<form method="POST">
+  <label>Your Name:
+    <input type="text" name="attendee_name" required>
+  </label><br><br>
+
+  <label>Adult Tickets ($<%= event.full_price_price.toFixed(2) %> each):
+    <input type="number" name="full_price_qty" value="0" min="0" max="<%= event.max_capacity - event.child_price_count - event.full_price_count %>"<%= event.full_price_count %>">
+  </label><br><br>
+
+  <% if (event.children_friendly === 'yes') { %>
+    <label>Child Tickets ($<%= event.child_price.toFixed(2) %> each):
+      <input type="number" name="child_qty" value="0" min="0" max="<%= event.max_capacity - event.child_price_count - event.full_price_count %>"<%= event.child_price_count %>">
+    </label><br><br>
+  <% } %>
+
+  <button type="submit">Book</button>
+</form>
+
+<% if (error) { %>
+  <p style="color:red;"><%= error %></p>
+<% } %>
+
+<a href="/attendee">Back to Event List</a>
+
+<script>
+  const form = document.querySelector('form');
+  form.addEventListener('submit', function (e) {
+    const max = parseInt("<%= event.max_capacity - event.full_price_count - event.child_price_count %>", 10);
+    const adult = parseInt(form.full_price_qty.value) || 0;
+    const child = parseInt(form.child_qty?.value) || 0;
+
+    if (adult + child > max) {
+      e.preventDefault();
+      alert(`You cannot book more than ${max} tickets in total.`);
+    }
+    else if (adult + child == 0) {
+      e.preventDefault();
+      alert(`Select the a minimum of 1 ticket to book.`);
+    }
+  });
+</script>

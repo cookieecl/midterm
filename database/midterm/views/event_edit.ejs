@@ -1,0 +1,132 @@
+<h1>Organiser Edit Event Page</h1>
+
+<form id="edit-form" method="POST">
+  <label>Title: <input name="title" value="<%= event.title %>" <%= readOnly ? 'readonly' : '' %> required></label><br>
+  <label>Description:<br><textarea name="description" <%= readOnly ? 'readonly' : '' %>><%= event.description %></textarea></label><br>
+  <label>Status:
+    <select name="status" <%= readOnly ? 'disabled' : '' %>>
+      <option value="draft" <%= event.status === 'draft' ? 'selected' : '' %>>Draft</option>
+      <option value="published" <%= event.status === 'published' ? 'selected' : '' %>>Published</option>
+    </select>
+  </label><br>
+  <label>Event Date: <input type="date" name="event_date" value="<%= event.event_date.split('T')[0] %>" <%= readOnly ? 'readonly' : '' %> required></label><br>
+  <label>Difficulty:
+    <select name="difficulty" <%= readOnly ? 'disabled' : '' %>>
+      <option value="beginner" <%= event.difficulty === 'beginner' ? 'selected' : '' %>>Beginner</option>
+      <option value="intermediate" <%= event.difficulty === 'intermediate' ? 'selected' : '' %>>Intermediate</option>
+      <option value="advance" <%= event.difficulty === 'advance' ? 'selected' : '' %>>Advance</option>
+    </select>
+  </label><br>
+  <label>Children Friendly:
+    <select name="children_friendly" <%= readOnly ? 'disabled' : '' %>>
+      <option value="yes" <%= event.children_friendly === 'yes' ? 'selected' : '' %>>Yes</option>
+      <option value="no" <%= event.children_friendly === 'no' ? 'selected' : '' %>>No</option>
+    </select>
+  </label><br>
+  <label>Max Capacity: <input type="number" name="max_capacity" value="<%= event.max_capacity %>" min="1" <%= readOnly ? 'readonly' : '' %> required></label><br>
+  <p><strong>Full Price Ticket Count:</strong> <%= event.full_price_count %></p>
+  <!-- <label>Full Price Ticket Count: <input type="number" name="full_price_count" value="<%= event.full_price_count %>" readonly></label><br> -->
+  <label>Full Price Ticket Price: <input type="number" step="0.01" name="full_price_price" value="<%= event.full_price_price %>" min="0" <%= readOnly ? 'readonly' : '' %> required></label><br>
+  <!-- <label>Child Ticket Count: <input type="number" name="child_price_count" value="<%= event.child_price_count %>" min="0" required></label><br> -->
+  <div id="child-ticket-fields">
+    <!-- <label>Child Ticket Count: 
+      <input type="number" name="child_price_count" value="<%= event.child_price_count %>" readonly>
+    </label><br> -->
+    <p><strong>Child Ticket Count:</strong> <%= event.child_price_count %></p>
+    <label>Child Ticket Price: 
+      <input type="number" step="0.01" name="child_price" value="<%= event.child_price %>" min="0" <%= readOnly ? 'readonly' : '' %> required>
+    </label><br>
+  </div>
+  <!-- <label>Child Ticket Price: <input type="number" step="0.01" name="child_price" value="<%= event.child_price %>" min="0" required></label><br> -->
+  
+  <% if (!readOnly) { %>
+    <button type="submit">Submit Changes</button>
+  <% } else {%>
+    <h2>Attendees</h2>
+
+    <% if (attendees.length === 0) { %>
+      <p>No one has booked this class yet.</p>
+    <% } else { %>
+      <table border="1">
+        <tr>
+          <th>Name</th>
+          <th>Adult Tickets</th>
+          <th>Child Tickets</th>
+        </tr>
+        <% attendees.forEach(att => { %>
+          <tr>
+            <td><%= att.attendee_name %></td>
+            <td><%= att.full_price_qty %></td>
+            <td><%= att.child_qty %></td>
+          </tr>
+        <% }) %>
+      </table>
+    <% } %>
+    
+    <%}
+    %>
+
+</form>
+
+<a href="/organiser" id="back-button">Back to Organiser Home</a>
+
+<script>
+  let isFormChanged = false;
+  const justCreated = '<%= justCreated ? "true" : "false" %>';
+
+  const form = document.getElementById('edit-form');
+  const inputs = form.querySelectorAll('input, textarea, select');
+  inputs.forEach(input => {
+    input.addEventListener('change', () => {
+      isFormChanged = true;
+    });
+  });
+
+  const backBtn = document.getElementById('back-button');
+  backBtn.addEventListener('click', async function (e) {
+    if (justCreated === 'true' && !isFormChanged) {
+      const confirmed = confirm("No changes detected. Return and delete this draft?");
+      if (!confirmed) {
+        e.preventDefault();
+        return;
+      }
+
+      // Delete draft from backend via fetch
+      const eventId = "<%= event.id %>";
+      await fetch(`/organiser/events/delete/${eventId}`, {
+        method: 'POST'
+      });
+    } else if (isFormChanged) {
+      const confirmed = confirm("You have unsaved changes. Are you sure you want to go back?");
+      if (!confirmed) {
+        e.preventDefault();
+      }
+      else if (justCreated == 'true')
+      {
+        const eventId = "<%= event.id %>";
+      await fetch(`/organiser/events/delete/${eventId}`, {
+        method: 'POST'
+      });
+      }
+    }
+  });
+
+    // Reference the select input
+    const childrenFriendlySelect = document.querySelector('select[name="children_friendly"]');
+  const childFieldsDiv = document.getElementById('child-ticket-fields');
+
+  // Function to toggle visibility
+  function toggleChildFields() {
+    if (childrenFriendlySelect.value === 'no') {
+      childFieldsDiv.style.display = 'none';
+    } else {
+      childFieldsDiv.style.display = 'block';
+    }
+  }
+
+  // Initial toggle based on the current value
+  toggleChildFields();
+
+  // Re-toggle when selection changes
+  childrenFriendlySelect.addEventListener('change', toggleChildFields);
+</script>

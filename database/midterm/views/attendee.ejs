@@ -1,0 +1,25 @@
+<h1>Attendee Home Page</h1>
+
+<% if (events.length === 0) { %>
+  <p>No events available at the moment.</p>
+<% } else { %>
+  <ul>
+    <% events.forEach(event => { %>
+      <li>
+        <h3><%= event.title %></h3>
+        <p><%= event.description %></p>
+        <p><strong>Difficulty:</strong> <%= event.difficulty %></p>
+        <p><strong>Date:</strong> <%= event.event_date %></p>
+        <% if (event.children_friendly === 'no') { %>
+          <p><strong>Child ticket is not available</strong></p>
+        <% } %>
+        <% if (event.child_price_count + event.full_price_count < event.max_capacity) { %>
+            <a href="/attendee/event/<%= event.id %>">Book Now</a>
+        <% } else {%>
+            <p><strong>Tickets are sold out!</strong></p>
+            <%}
+        %>
+      </li>
+    <% }); %>
+  </ul>
+<% } %>

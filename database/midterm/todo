@@ -1,0 +1,8 @@
+1. add site name and description on the attendee home page
+2. add event creation date and modification date on the organiser edit event page
+3. make site setting page
+4. have a link in the organiser home page to the setting page
+5. last modified or published at for published event in the organiser home page
+6. published event must have link to the attendee event page of that particular event
+7. the draft must also have a date of published??
+8. timestamp the publication date when changed from draft to published

@@ -22,8 +22,8 @@ CREATE TABLE IF NOT EXISTS events (
     event_date TEXT NOT NULL,
     created_at TEXT NOT NULL,
     published_at TEXT,
-    difficulty TEXT NOT NULL, --either beginner, intermediate, or advance
-    children_friendly TEXT NOT NULL, --either yes or no (idk bool or no)
+    difficulty TEXT NOT NULL,
+    children_friendly INTEGER NOT NULL,
     max_capacity INTEGER NOT NULL,
     full_price_count INTEGER NOT NULL,
     full_price_price REAL NOT NULL,
