@@ -3,23 +3,34 @@ const router = express.Router();
 
 // GET /organiser - Organiser Home Page
 router.get('/', (req, res) => {
-    const sql = `SELECT * FROM events ORDER BY event_date ASC`;
+  const sqlEvents = `SELECT * FROM events ORDER BY event_date ASC`;
+  const sqlSettings = `SELECT * FROM settings WHERE id = 1`;
 
-    global.db.all(sql, [], (err, rows) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).send("DB error");
-        }
+  global.db.all(sqlEvents, [], (err, rows) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send("DB error");
+    }
 
-        // Separate draft and published events for display
-        const drafts = rows.filter(event => event.status === 'draft');
-        const published = rows.filter(event => event.status === 'published');
+    // Separate draft and published events for display
+    const drafts = rows.filter(event => event.status === 'draft');
+    const published = rows.filter(event => event.status === 'published');
 
-        res.render('organiser_published', {
-            drafts: drafts,
-            published: published,
-        });
+    // Now get site settings
+    global.db.get(sqlSettings, [], (err2, settings) => {
+      if (err2) {
+        console.error(err2);
+        return res.status(500).send("DB error");
+      }
+
+      // Pass drafts, published, and settings to the view
+      res.render('organiser_published', {
+        drafts,
+        published,
+        settings // Pass settings here
+      });
     });
+  });
 });
 
 
@@ -28,12 +39,12 @@ router.post('/events/create', (req, res) => {
     const now = new Date().toISOString();
     const sql = `
         INSERT INTO events 
-        (title, description, status, event_date, created_at, difficulty, children_friendly, max_capacity, full_price_count, full_price_price, child_price_count, child_price)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (title, description, status, event_date, created_at, updated_at, published_at, difficulty, children_friendly, max_capacity, full_price_count, full_price_price, child_price_count, child_price)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     // Insert with some default values or empty strings, status 'draft'
     const params = [
-        '', '', 'draft', now, now, 'beginner', 'yes', 0, 0, 0.0, 0, 0.0
+        '', '', 'draft', now, now, now, null, 'beginner', 'yes', 0, 0, 0.0, 0, 0.0
     ];
     global.db.run(sql, params, function(err) {
         if (err) {
@@ -88,63 +99,83 @@ router.get('/events/edit/:id', (req, res) => {
 
 // Route to handle edit form submission (update event)
 router.post('/events/edit/:id', (req, res) => {
-    const id = req.params.id;
-  
-    // First check if the event is already published
-    global.db.get('SELECT status FROM events WHERE id = ?', [id], (err, row) => {
-      if (err || !row) {
-        console.error(err || "Event not found");
-        return res.status(500).send("Event not found or DB error");
+  const id = req.params.id;
+
+  global.db.get('SELECT status, published_at FROM events WHERE id = ?', [id], (err, existing) => {
+    if (err || !existing) {
+      console.error(err || "Event not found");
+      return res.status(500).send("Event not found or DB error");
+    }
+
+    const {
+      title = '',
+      description = '',
+      status = 'draft',
+      event_date,
+      difficulty = 'beginner',
+      children_friendly = 'yes',
+      max_capacity = 0,
+      full_price_count = 0,
+      full_price_price = 0.0,
+      child_price_count = 0,
+      child_price = 0.0
+    } = req.body;
+
+    const now = new Date().toISOString();
+
+    // Only update published_at if transitioning from draft → published
+    let publishedAt = existing.published_at;
+    if (existing.status === 'draft' && status === 'published') {
+      publishedAt = now;
+    }
+
+    const sql = `
+      UPDATE events SET
+        title = ?,
+        description = ?,
+        status = ?,
+        event_date = ?,
+        difficulty = ?,
+        children_friendly = ?,
+        max_capacity = ?,
+        full_price_count = ?,
+        full_price_price = ?,
+        child_price_count = ?,
+        child_price = ?,
+        published_at = ?,
+        updated_at = ?
+      WHERE id = ?
+    `;
+
+    const params = [
+      title,
+      description,
+      status,
+      event_date,
+      difficulty,
+      children_friendly,
+      max_capacity,
+      full_price_count,
+      full_price_price,
+      child_price_count,
+      child_price,
+      publishedAt,
+      now,
+      id
+    ];
+
+    global.db.run(sql, params, function (err2) {
+      if (err2) {
+        console.error(err2);
+        res.status(500).send("Update failed");
+      } else {
+        res.redirect('/organiser');
       }
-  
-      if (row.status === 'published') {
-        // Prevent editing if published
-        return res.status(400).send("Cannot edit a published event.");
-      }
-  
-      // If not published, continue updating
-      const {
-        title, description, status, event_date, difficulty,
-        children_friendly, max_capacity, full_price_count,
-        full_price_price, child_price_count, child_price
-      } = req.body;
-  
-      const now = new Date().toISOString();
-  
-      const sql = `
-        UPDATE events SET
-            title = ?,
-            description = ?,
-            status = ?,
-            event_date = ?,
-            difficulty = ?,
-            children_friendly = ?,
-            max_capacity = ?,
-            full_price_price = ?,
-            child_price = ?,
-            published_at = CASE WHEN status = 'published' THEN ? ELSE published_at END
-        WHERE id = ?
-      `;
-  
-      const publishedAt = status === 'published' ? now : null;
-  
-      const params = [
-        title, description, status, event_date, difficulty,
-        children_friendly, max_capacity,
-        full_price_price, child_price,
-        publishedAt, id
-      ];
-  
-      global.db.run(sql, params, function (err2) {
-        if (err2) {
-          console.error(err2);
-          res.status(500).send("Update failed");
-        } else {
-          res.redirect('/organiser');
-        }
-      });
     });
   });
+});
+
+
   
 
 // Delete event

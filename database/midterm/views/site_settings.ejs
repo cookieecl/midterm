@@ -1,0 +1,42 @@
+<h1>Site Settings</h1>
+
+<form method="POST" onsubmit="return validateForm()">
+  <label>Site Name:</label><br>
+  <input type="text" name="site_name" value="<%= settings.site_name %>" required><br><br>
+
+  <label>Site Description:</label><br>
+    <textarea
+    name="site_description"
+    id="description-textarea"
+    required
+    style="overflow:hidden; min-height: 50px; min-width: 200px"
+    ><%= settings ? settings.site_description : '' %></textarea><br><br>
+
+  <button type="submit">Save Settings</button>
+</form>
+
+<a href="/organiser">Back to Organiser Home</a>
+
+<script>
+  function validateForm() {
+    const name = document.querySelector('[name="site_name"]').value.trim();
+    const desc = document.querySelector('[name="site_description"]').value.trim();
+    if (!name || !desc) {
+      alert("Please fill out all fields.");
+      return false;
+    }
+    return true;
+  }
+    const textarea = document.getElementById('description-textarea');
+
+    function autoResize() {
+        textarea.style.height = 'auto'; // reset height
+        textarea.style.height = textarea.scrollHeight + 'px'; // set height to scrollHeight
+    }
+
+    // Initial resize on page load (to fit existing text)
+    autoResize();
+
+    // Resize on input
+    textarea.addEventListener('input', autoResize);
+</script>

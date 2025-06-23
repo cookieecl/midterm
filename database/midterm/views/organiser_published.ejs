@@ -1,4 +1,7 @@
 <h1>Organiser Home Page</h1>
+<p><%= settings.site_name %> - <%= settings.site_description %></p>
+
+<a href="/organiser/settings">Site Settings</a> <br>
 
 <a href="/organiser/events/create" onclick="event.preventDefault(); document.getElementById('create-form').submit();">
   <button>Create New Event</button>
@@ -15,6 +18,7 @@
     <th>Children friendly</th>
     <th>Date</th>
     <th>Created At</th>
+    <th>Published At</th>
     <th>Ticket price</th>
     <th>Full Price Tickets</th>
     <th>Child ticket price</th>
@@ -30,6 +34,10 @@
         <td><%= event.children_friendly %></td>
         <td><%= event.event_date.split('T')[0] %></td>
         <td><%= event.created_at.split('T')[0] %></td>
+        <td><%= event.published_at ? new Date(event.published_at).toLocaleString('en-GB', {
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit'
+  }) : '----/--/--' %></td>
         <td>$<%= event.full_price_price %></td>
         <td><%= event.full_price_count %></td>
         <td>
@@ -41,6 +49,9 @@
         <td><%= event.child_price_count + event.full_price_count %>/<%= event.max_capacity %> (<%= ((event.child_price_count + event.full_price_count) / event.max_capacity * 100).toFixed(2) %>%)</td>
       <td>
         <a href="/organiser/events/edit/<%= event.id %>">Details</a> |
+        <a href="/attendee/event/<%= event.id %>">
+          attendee page
+        </a> |
         <form action="/organiser/events/delete/<%= event.id %>" method="POST" style="display:inline;">
           <button type="submit" onclick="return confirm('Delete this event?');">Delete</button>
         </form>
@@ -58,6 +69,7 @@
     <th>Children friendly</th>
     <th>Date</th>
     <th>Created At</th>
+    <th>Last updated</th>
     <th>Ticket price</th>
     <th>Child ticket price</th>
     <th>Tickets available</th>
@@ -71,6 +83,10 @@
       <td><%= event.children_friendly %></td>
       <td><%= event.event_date.split('T')[0] %></td>
       <td><%= event.created_at.split('T')[0] %></td>
+      <td><%= new Date(event.updated_at).toLocaleString('en-GB', {
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit'
+  }) %></td>
       <td>$<%= event.full_price_price %></td>
       <td>
         <%= event.children_friendly === 'no' ? '-' : `$${event.child_price}` %>

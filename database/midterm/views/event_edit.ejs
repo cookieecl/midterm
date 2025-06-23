@@ -1,4 +1,21 @@
 <h1>Organiser Edit Event Page</h1>
+<p>created at: <%= new Date(event.created_at).toLocaleString('en-GB', {
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit'
+  }) %></p>
+
+<% if (!readOnly) { %>
+  <p>last updated at: <%= new Date(event.updated_at).toLocaleString('en-GB', {
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit'
+  }) %></p>
+  <% } else {%>
+    <p>published at: <%= new Date(event.published_at).toLocaleString('en-GB', {
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit'
+  }) %></p>
+<% } %>
+
 
 <form id="edit-form" method="POST">
   <label>Title: <input name="title" value="<%= event.title %>" <%= readOnly ? 'readonly' : '' %> required></label><br>
@@ -112,7 +129,7 @@
   });
 
     // Reference the select input
-    const childrenFriendlySelect = document.querySelector('select[name="children_friendly"]');
+  const childrenFriendlySelect = document.querySelector('select[name="children_friendly"]');
   const childFieldsDiv = document.getElementById('child-ticket-fields');
 
   // Function to toggle visibility

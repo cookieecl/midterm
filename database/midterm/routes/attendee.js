@@ -9,7 +9,15 @@ router.get('/', (req, res) => {
             console.error(err);
             return res.status(500).send("Internal Server Error");
         }
-        res.render('attendee', { events });
+
+        db.get('SELECT * FROM settings LIMIT 1', (err2, settings) => {
+            if (err2) {
+                console.error(err2);
+                return res.status(500).send("Internal Server Error");
+            }
+
+            res.render('attendee', { events, settings });
+        });
     });
 });
 

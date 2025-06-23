@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS events (
     status TEXT NOT NULL, --either draft or published (idk change to bool or no)
     event_date TEXT NOT NULL,
     created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
     published_at TEXT,
     difficulty TEXT NOT NULL,
     children_friendly INTEGER NOT NULL,

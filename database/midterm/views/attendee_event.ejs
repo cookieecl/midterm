@@ -12,12 +12,12 @@
   </label><br><br>
 
   <label>Adult Tickets ($<%= event.full_price_price.toFixed(2) %> each):
-    <input type="number" name="full_price_qty" value="0" min="0" max="<%= event.max_capacity - event.child_price_count - event.full_price_count %>"<%= event.full_price_count %>">
+    <input type="number" name="full_price_qty" value="0" min="0"<%= event.full_price_count %>">
   </label><br><br>
 
   <% if (event.children_friendly === 'yes') { %>
     <label>Child Tickets ($<%= event.child_price.toFixed(2) %> each):
-      <input type="number" name="child_qty" value="0" min="0" max="<%= event.max_capacity - event.child_price_count - event.full_price_count %>"<%= event.child_price_count %>">
+      <input type="number" name="child_qty" value="0" min="0"<%= event.child_price_count %>">
     </label><br><br>
   <% } %>
 
@@ -37,13 +37,17 @@
     const adult = parseInt(form.full_price_qty.value) || 0;
     const child = parseInt(form.child_qty?.value) || 0;
 
-    if (adult + child > max) {
+    if (max == 0) {
+      e.preventDefault();
+      alert(`Sorry, this event is fully booked!`);
+    }
+    else if (adult + child > max) {
       e.preventDefault();
       alert(`You cannot book more than ${max} tickets in total.`);
     }
     else if (adult + child == 0) {
       e.preventDefault();
-      alert(`Select the a minimum of 1 ticket to book.`);
+      alert(`Select a minimum of 1 ticket to book.`);
     }
   });
 </script>

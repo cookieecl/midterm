@@ -37,6 +37,9 @@ app.use('/organiser', organiserRoutes);
 const attendeeRoutes = require('./routes/attendee');
 app.use('/attendee', attendeeRoutes);
 
+const settingRoutes = require('./routes/settings');
+app.use('/organiser/settings', settingRoutes);
+
 // const usersRoutes = require('./routes/users');
 // app.use('/users', usersRoutes);
 
