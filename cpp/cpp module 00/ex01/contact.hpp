@@ -1,9 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   contact.hpp                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aputri-a <aputri-a@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/22 15:36:53 by aputri-a          #+#    #+#             */
+/*   Updated: 2025/06/22 17:49:45 by aputri-a         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #pragma once
 #ifndef CONTACT_HPP
 #define CONTACT_HPP
 
 #include <iostream>
 #include <string>
+#include <iomanip>
 
 class	Contact
 {

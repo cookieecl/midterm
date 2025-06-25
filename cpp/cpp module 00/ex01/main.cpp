@@ -1,16 +1,27 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aputri-a <aputri-a@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/22 15:37:07 by aputri-a          #+#    #+#             */
+/*   Updated: 2025/06/22 17:48:04 by aputri-a         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "header.hpp"
 
 void	handleEOF()
 {
 	std::cout << std::endl << "==============================" << std::endl;
 	std::cout << "Thanks!" << std::endl;
-	std::exit(0);
 }
 
 std::string	toupperStr(const std::string& str)
 {
 	std::string result = str;
-	for (int i = 0; i < result.length(); ++i)
+	for (int i = 0; i < static_cast<int>(result.length()); ++i)
 	{
 		result[i] = static_cast<char>(std::toupper(result[i]));
 	}
@@ -26,28 +37,29 @@ void	printMenu()
 	std::cout << "Enter a command: ";
 }
 
-void	runCommand(PhoneBook& phoneBook, const std::string& inputCmd)
+int	runCommand(PhoneBook& phoneBook, const std::string& cmd)
 {
-	std::string	cmd = toupperStr(inputCmd);
-
+	// std::string	cmd = toupperStr(inputCmd);
 	try
 	{
-		if (cmd == "ADD" || cmd == "1")
+		if (cmd == "ADD")
 		{
 			phoneBook.addContact();
 		}
-		else if (cmd == "SEARCH" || cmd == "2")
+		else if (cmd == "SEARCH")
 		{
 			phoneBook.searchContact();
 		}
-		else if (cmd == "EXIT" || cmd == "3")
+		else if (cmd == "EXIT")
 		{
 			handleEOF();
+			return (1);
 		}
 		else
 		{
             throw std::runtime_error("Invalid command");
 		}
+		return (0);
 	}
 	catch(const std::runtime_error& e)
 	{
@@ -67,17 +79,22 @@ int	main()
 		if (!std::getline(std::cin, cmd))
 		{
 			handleEOF();
+			return (0);
 		}
 		try
 		{
-			runCommand(phoneBook, cmd);
+			if (runCommand(phoneBook, cmd) == 1)
+				return (0);
 		}
 		catch(const std::runtime_error& e)
 		{
 			if (std::string(e.what()) == "Invalid command")
 				std::cout << "Invalid command, please try again!" << std::endl;
 			else
+			{
 				handleEOF();
+				return (0);
+			}
 		}
 		std::cout << std::endl;
 	}

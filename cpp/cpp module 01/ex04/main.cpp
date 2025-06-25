@@ -19,7 +19,7 @@ std::string	replaceLine(std::string line, std::string prev, std::string newstr)
 
 bool	filesSetup(std::ifstream& inputFile, std::ofstream& outFile, std::string filename)
 {
-	inputFile.open(filename);
+	inputFile.open(filename.c_str());
 	if (!inputFile.is_open())
 	{
 		std::cout << "[Invalid file] failed to open " << filename << std::endl;
@@ -27,7 +27,7 @@ bool	filesSetup(std::ifstream& inputFile, std::ofstream& outFile, std::string fi
 	}
 
 	std::string		outfilename = filename + ".replace";
-	outFile.open(outfilename);
+	outFile.open(outfilename.c_str());
 	if (!outFile.is_open())
 	{
 		std::cout << "[Invalid file] failed to open " << outfilename << std::endl;
@@ -43,10 +43,7 @@ bool	fillOutfile(std::ifstream& inputFile, std::ofstream& outFile, std::string p
 
 	while (std::getline(inputFile, line))
 	{
-		if (prev == "")
-			outFile << line << std::endl;
-		else
-			outFile << replaceLine(line, prev, newstr) << std::endl;
+		outFile << replaceLine(line, prev, newstr) << std::endl;
 	}
 	return (true);
 }
@@ -55,7 +52,7 @@ int main(int argc, char **argv)
 {
 	if (argc != 4)
 	{
-		std::cout << "[Invalid parameter] ./replace filename toBeReplaced newString" << std::endl;
+		std::cout << "[Invalid parameter] ./sed filename toBeReplaced newString" << std::endl;
 		return (1);
 	}
 
@@ -68,6 +65,11 @@ int main(int argc, char **argv)
 	if (filename.empty())
 	{
 		std::cout << "[Invalid parameter] Enter a valid filename" << std::endl;
+		return (1);
+	}
+	if (prevstr.empty())
+	{
+		std::cout << "[Invalid parameter] Enter a valid toBeReplaced" << std::endl;
 		return (1);
 	}
 

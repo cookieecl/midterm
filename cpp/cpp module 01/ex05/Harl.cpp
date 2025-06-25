@@ -18,8 +18,12 @@ void	Harl::complain(std::string level)
 	for (int i = 0; i < 4; ++i)
 	{
 		if (levels[i] == level)
+		{
 			(this->*action[i])();
+			return ;
+		}
 	}
+	std::cout << "[ Probably complaining about insignificant problems ]" << std::endl;
 }
 
 void	Harl::debug(void)

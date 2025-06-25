@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   contact.cpp                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aputri-a <aputri-a@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/22 15:36:51 by aputri-a          #+#    #+#             */
+/*   Updated: 2025/06/22 17:49:21 by aputri-a         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "contact.hpp"
 
 Contact::Contact()
@@ -50,14 +62,7 @@ void	Contact::printInfoPreview()
 		{
 			std::cout << fields[i].substr(0, 9) << ".";
 		}
-		else
-		{
-			std::cout << fields[i].substr(0, fieldLen);
-			for (int j = 0; j < 10 - fieldLen; ++j)
-			{
-				std::cout << " ";
-			}
-		}
+		std::cout << std::right << std::setw(10) << fields[i];
 		if (i != 2)
 			std::cout << " | ";
 	}
@@ -87,7 +92,7 @@ int	Contact::inputCheck(int i)
 
 int	Contact::validateName(const std::string& name)
 {
-	for (int i = 0; i < name.length(); ++i)
+	for (int i = 0; i < static_cast<int>(name.length()); ++i)
 	{
 		if (!isalpha(name[i]) && name[i] != ' ')
 			return (0);
@@ -101,7 +106,7 @@ int	Contact::validateName(const std::string& name)
 
 int	Contact::validateNumber(const std::string& n)
 {
-	for (int i = 0; i < n.length(); ++i)
+	for (int i = 0; i < static_cast<int>(n.length()); ++i)
 	{
 		if (!isdigit(n[i]))
 			return (0);
