@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ScavTrap.hpp                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aputri-a <aputri-a@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/02 20:20:12 by aputri-a          #+#    #+#             */
+/*   Updated: 2025/07/02 20:20:12 by aputri-a         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #pragma once
 #ifndef SCAVTRAP_HPP
 #define SCAVTRAP_HPP
@@ -16,7 +28,6 @@ class	ScavTrap : public ClapTrap
 		ScavTrap(const ScavTrap& other);
 		ScavTrap&	operator=(const ScavTrap &other);
 
-		// override from the base class
 		void	attack(const std::string& target);
 		void	guardGate();
 

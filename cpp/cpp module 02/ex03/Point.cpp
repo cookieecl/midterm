@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Point.cpp                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aputri-a <aputri-a@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/02 12:42:31 by aputri-a          #+#    #+#             */
+/*   Updated: 2025/07/02 15:22:21 by aputri-a         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "Point.hpp"
 
 Point::Point()
@@ -26,6 +38,10 @@ Point::Point(const Point& other)
 Point&	Point::operator=(const Point &other)
 {
 	// std::cout << "Copy assignment operator called" << std::endl;
+	if (this != &other)
+	{
+		return (*this);
+	}
 	return (*this);
 }
 

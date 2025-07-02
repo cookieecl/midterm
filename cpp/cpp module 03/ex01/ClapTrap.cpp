@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ClapTrap.cpp                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aputri-a <aputri-a@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/02 20:20:03 by aputri-a          #+#    #+#             */
+/*   Updated: 2025/07/02 20:20:03 by aputri-a         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ClapTrap.hpp"
 
 ClapTrap::ClapTrap()
@@ -62,7 +74,7 @@ void	ClapTrap::takeDamage(unsigned int amount)
 		return ;
 	}
 
-	if (hitPoints > amount)
+	if (hitPoints > static_cast<int>(amount))
 	{
 		dmgTaken = amount;
 		hitPoints -= amount;
@@ -88,7 +100,7 @@ void	ClapTrap::beRepaired(unsigned int amount)
 		std::cout << "ClapTrap " << name << " is no longer able to continue the battle! Can't do anything including healing." << std::endl;
 		return ;
 	}
-	if (energyPoints < amount)
+	if (energyPoints < static_cast<int>(amount))
 	{
 		std::cout << "ClapTrap " << name << " has not enough energy point to heal " << amount << " hit point! Aborting heal." << std::endl;
 		return ;

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   bsp.cpp                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aputri-a <aputri-a@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/02 12:42:17 by aputri-a          #+#    #+#             */
+/*   Updated: 2025/07/02 12:42:17 by aputri-a         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "Point.hpp"
 
 float	area(Point const a, Point const b, Point const c)
@@ -11,8 +23,6 @@ float	area(Point const a, Point const b, Point const c)
 	
 	return (crossProduct / 2);
 }
-
-
 
 bool	bsp(Point const a, Point const b, Point const c, Point const point)
 {
