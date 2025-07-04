@@ -1,4 +1,4 @@
-<h1>Organiser <%= organiser %>'s Home Page</h1>
+<!-- <h1>Organiser <%= organiser %>'s Home Page</h1>
 <p><%= settings.site_name %> - <%= settings.site_description %></p>
 
 <form action="/logout" method="GET" style="margin-bottom: 20px;">
@@ -113,4 +113,157 @@
       </td>
     </tr>
   <% }); %>
-</table>
+</table> -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= settings.site_name %> - Organiser Home</title>
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background-color: #fff6e1;
+      font-family: 'Patrick Hand', cursive;
+      color: #4a3b2c;
+    }
+
+    .header {
+      background-color: #a2b9cd;
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    .header a {
+      color: white;
+      text-decoration: none;
+      margin-left: 1rem;
+    }
+
+    .container {
+      padding: 2rem;
+    }
+
+    .create-btn {
+      display: inline-block;
+      background-color: #8c5e4f;
+      color: white;
+      padding: 0.6rem 1.2rem;
+      margin-bottom: 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      border-bottom: 2px solid #a2b9cd;
+      display: inline-block;
+      padding-bottom: 0.3rem;
+      margin-top: 2rem;
+    }
+
+    .event-card {
+      border: 2px solid #d9c6b0;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      background: #fff;
+      width: 90%;
+    }
+
+    .event-card p {
+      margin: 0.3rem 0;
+    }
+
+    .event-actions a, .event-actions form {
+      display: inline-block;
+      margin-right: 0.5rem;
+    }
+
+    .event-actions button {
+      background-color: #a2b9cd;
+      border: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      cursor: pointer;
+      color: white;
+      font-family: 'Patrick Hand', cursive;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Organiser <%= organiser %>'s Home Page</h1>
+    <div>
+      <a href="/organiser/settings">Site Settings</a>
+      <form action="/logout" method="GET" style="display:inline;">
+        <button type="submit" style="background:none; border:none; color:white; cursor:pointer; font-family:'Patrick Hand';">Log out</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="container">
+    <p><%= settings.site_name %> - <%= settings.site_description %></p>
+
+    <a class="create-btn" href="/organiser/events/create" onclick="event.preventDefault(); document.getElementById('create-form').submit();">create new event</a>
+    <form id="create-form" action="/organiser/events/create" method="POST" style="display:none;"></form>
+
+    <h2>published events</h2>
+    <% published.forEach(event => { %>
+      <div class="event-card">
+        <p><strong><%= event.title || '(No title)' %></strong></p>
+        <p>→ <%= event.description %></p>
+        <p>organiser: <%= event.organiser %></p>
+        <p>difficulty: <%= event.difficulty %></p>
+        <p><%= event.children_friendly === 0 ? 'not children friendly' : 'children friendly' %></p>
+        <p>date: <%= event.event_date.split('T')[0] %></p>
+        <p>tickets booked: <%= event.child_price_count + event.full_price_count %>/<%= event.max_capacity %> (
+          <%= ((event.child_price_count + event.full_price_count) / event.max_capacity * 100).toFixed(2) %>% )</p>
+        <p>full price tickets: <%= event.full_price_count %> ($<%= event.full_price_price %>)</p>
+        <p>child tickets: <%= event.children_friendly === 0 ? '-' : `${event.child_price_count} ($${event.child_price})` %></p>
+        <p>published at: <%= event.published_at ? new Date(event.published_at).toLocaleDateString() : '---' %></p>
+        <p>created at: <%= event.created_at.split('T')[0] %></p>
+        <div class="event-actions">
+          <a href="/organiser/events/edit/<%= event.id %>">details</a>
+          <a href="/attendee/event/<%= event.id %>">attendee page</a>
+          <form action="/organiser/events/delete/<%= event.id %>" method="POST">
+            <button onclick="return confirm('Delete this event?');">delete event</button>
+          </form>
+        </div>
+      </div>
+    <% }) %>
+
+    <h2>draft events</h2>
+    <% drafts.forEach(event => { %>
+      <div class="event-card">
+        <p><strong><%= event.title || '(No title)' %></strong></p>
+        <p>→ <%= event.description %></p>
+        <p>difficulty: <%= event.difficulty %></p>
+        <p><%= event.children_friendly === 0 ? 'not children friendly' : 'children friendly' %></p>
+        <p>date: <%= event.event_date.split('T')[0] %></p>
+        <p>created at: <%= event.created_at.split('T')[0] %></p>
+        <p>updated at: <%= new Date(event.updated_at).toLocaleDateString() %></p>
+        <p>full price: $<%= event.full_price_price %></p>
+        <p>child price: <%= event.children_friendly === 0 ? '-' : `$${event.child_price}` %></p>
+        <p>tickets available: <%= event.max_capacity %></p>
+        <div class="event-actions">
+          <a href="/organiser/events/edit/<%= event.id %>">edit</a>
+          <form action="/organiser/events/publish/<%= event.id %>" method="POST">
+            <button>publish</button>
+          </form>
+          <form action="/organiser/events/delete/<%= event.id %>" method="POST">
+            <button onclick="return confirm('Delete this draft?');">delete</button>
+          </form>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</body>
+</html>
