@@ -10,9 +10,10 @@
       <li>
         <h3><%= event.title %></h3>
         <p><%= event.description %></p>
+        <p><strong>Instructor:</strong> <%= event.organiser %></p>
         <p><strong>Difficulty:</strong> <%= event.difficulty %></p>
         <p><strong>Date:</strong> <%= event.event_date %></p>
-        <% if (event.children_friendly === 'no') { %>
+        <% if (event.children_friendly === 0) { %>
           <p><strong>Child ticket is not available</strong></p>
         <% } %>
         <% if (event.child_price_count + event.full_price_count < event.max_capacity) { %>

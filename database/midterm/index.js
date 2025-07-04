@@ -5,12 +5,20 @@
 
 // Set up express, bodyparser and EJS
 const express = require('express');
+const session = require('express-session');
+const { router: authRouter, ensureOrganiser } = require('./routes/auth');
 const app = express();
 const port = 3000;
 var bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs'); // set the app to use ejs for rendering
 app.use(express.static(__dirname + '/public')); // set location of static files
+app.use(session({
+  secret: 'your_secret_key_here',
+  resave: false,
+  saveUninitialized: false,
+}));
+
 
 // Set up SQLite
 // Items in the global namespace are accessible throught out the node application
@@ -26,19 +34,40 @@ global.db = new sqlite3.Database('./database.db',function(err){
 });
 
 // Handle requests to the home page 
+
 app.get('/', (req, res) => {
-    res.render('home');
+  global.db.get('SELECT site_name, site_description FROM settings LIMIT 1', (err, settings) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send("Database error");
+    } else {
+      res.render('home', { settings });
+    }
+  });
 });
 
+
+app.use('/images', express.static(__dirname + '/images'));
+
+app.use(express.urlencoded({ extended: true }));
+
+app.use(authRouter);
+
+// Protect organiser routes:
+app.use('/organiser', ensureOrganiser, require('./routes/organiser'));
+
 // Add all the route handlers in usersRoutes to the app under the path /users
-const organiserRoutes = require('./routes/organiser');
-app.use('/organiser', organiserRoutes);
+// const organiserRoutes = require('./routes/organiser');
+// app.use('/organiser', organiserRoutes);
 
 const attendeeRoutes = require('./routes/attendee');
 app.use('/attendee', attendeeRoutes);
 
 const settingRoutes = require('./routes/settings');
 app.use('/organiser/settings', settingRoutes);
+
+const registerRoutes = require('./routes/register');
+app.use('/', registerRoutes);
 
 // const usersRoutes = require('./routes/users');
 // app.use('/users', usersRoutes);

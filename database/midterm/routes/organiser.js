@@ -1,33 +1,42 @@
 const express = require('express');
 const router = express.Router();
 
+const ensureOrganiser = require('../middleware/auth');
+router.use(ensureOrganiser);
+
 // GET /organiser - Organiser Home Page
 router.get('/', (req, res) => {
-  const sqlEvents = `SELECT * FROM events ORDER BY event_date ASC`;
+  const organiser = req.session.organiserUsername;
+  const sqlPublished = `SELECT * FROM events WHERE status = 'published' ORDER BY event_date ASC`;
+  const sqlDrafts = `SELECT * FROM events WHERE status = 'draft' AND organiser = ? ORDER BY event_date ASC`;
   const sqlSettings = `SELECT * FROM settings WHERE id = 1`;
 
-  global.db.all(sqlEvents, [], (err, rows) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send("DB error");
+  global.db.all(sqlPublished, [], (err1, published) => {
+    if (err1) {
+      console.error(err1);
+      return res.status(500).send("DB error (published)");
     }
 
-    // Separate draft and published events for display
-    const drafts = rows.filter(event => event.status === 'draft');
-    const published = rows.filter(event => event.status === 'published');
-
-    // Now get site settings
-    global.db.get(sqlSettings, [], (err2, settings) => {
+    // Get this organiser's draft events
+    global.db.all(sqlDrafts, [organiser], (err2, drafts) => {
       if (err2) {
         console.error(err2);
-        return res.status(500).send("DB error");
+        return res.status(500).send("DB error (drafts)");
       }
 
-      // Pass drafts, published, and settings to the view
-      res.render('organiser_published', {
-        drafts,
-        published,
-        settings // Pass settings here
+      // Get site settings
+      global.db.get(sqlSettings, [], (err3, settings) => {
+        if (err3) {
+          console.error(err3);
+          return res.status(500).send("DB error (settings)");
+        }
+
+        res.render('organiser_published', {
+          drafts,
+          published,
+          settings,
+          organiser
+        });
       });
     });
   });
@@ -37,14 +46,15 @@ router.get('/', (req, res) => {
 // Route to create a new blank event and redirect to edit page
 router.post('/events/create', (req, res) => {
     const now = new Date().toISOString();
+      const organiser = req.session.organiserUsername; // ✅ get organiser from session
     const sql = `
         INSERT INTO events 
-        (title, description, status, event_date, created_at, updated_at, published_at, difficulty, children_friendly, max_capacity, full_price_count, full_price_price, child_price_count, child_price)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (title, description, status, event_date, created_at, updated_at, published_at, difficulty, children_friendly, max_capacity, full_price_count, full_price_price, child_price_count, child_price, organiser)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     // Insert with some default values or empty strings, status 'draft'
     const params = [
-        '', '', 'draft', now, now, now, null, 'beginner', 'yes', 0, 0, 0.0, 0, 0.0
+        '', '', 'draft', now, now, now, null, 'beginner', 1, 0, 0, 0.0, 0, 0.0, organiser
     ];
     global.db.run(sql, params, function(err) {
         if (err) {
@@ -87,6 +97,7 @@ router.get('/events/edit/:id', (req, res) => {
         // Render the page passing event info, readOnly flag, justCreated flag, and the attendees list
         res.render('event_edit', {
           event: eventRow,
+          organiserName: eventRow.organiser,
           justCreated,
           readOnly,
           attendees
@@ -94,7 +105,6 @@ router.get('/events/edit/:id', (req, res) => {
       });
     });
   });
-  
 
 
 // Route to handle edit form submission (update event)
@@ -113,7 +123,7 @@ router.post('/events/edit/:id', (req, res) => {
       status = 'draft',
       event_date,
       difficulty = 'beginner',
-      children_friendly = 'yes',
+      children_friendly = 1,
       max_capacity = 0,
       full_price_count = 0,
       full_price_price = 0.0,

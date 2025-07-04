@@ -1,4 +1,5 @@
 <h1>Organiser Edit Event Page</h1>
+<p><strong>Organiser:</strong> <%= organiserName %></p>
 <p>created at: <%= new Date(event.created_at).toLocaleString('en-GB', {
     year: 'numeric', month: '2-digit', day: '2-digit',
     hour: '2-digit', minute: '2-digit', second: '2-digit'
@@ -36,8 +37,8 @@
   </label><br>
   <label>Children Friendly:
     <select name="children_friendly" <%= readOnly ? 'disabled' : '' %>>
-      <option value="yes" <%= event.children_friendly === 'yes' ? 'selected' : '' %>>Yes</option>
-      <option value="no" <%= event.children_friendly === 'no' ? 'selected' : '' %>>No</option>
+      <option value="1" <%= event.children_friendly === 1 ? 'selected' : '' %>>Yes</option>
+      <option value="0" <%= event.children_friendly === 0 ? 'selected' : '' %>>No</option>
     </select>
   </label><br>
   <label>Max Capacity: <input type="number" name="max_capacity" value="<%= event.max_capacity %>" min="1" <%= readOnly ? 'readonly' : '' %> required></label><br>
@@ -134,7 +135,7 @@
 
   // Function to toggle visibility
   function toggleChildFields() {
-    if (childrenFriendlySelect.value === 'no') {
+    if (childrenFriendlySelect.value === '0') {
       childFieldsDiv.style.display = 'none';
     } else {
       childFieldsDiv.style.display = 'block';

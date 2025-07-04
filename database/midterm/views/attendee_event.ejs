@@ -2,8 +2,9 @@
 
 <h2><%= event.title %></h2>
 <p><%= event.description %></p>
-<p><strong>Date:</strong> <%= event.event_date %></p>
+<p><strong>Instructor:</strong> <%= event.organiser %></p>
 <p><strong>Difficulty:</strong> <%= event.difficulty %></p>
+<p><strong>Date:</strong> <%= event.event_date %></p>
 <p><strong>Available tickets:</strong> <%= event.max_capacity - event.child_price_count - event.full_price_count %></p>
 
 <form method="POST">
@@ -15,7 +16,7 @@
     <input type="number" name="full_price_qty" value="0" min="0"<%= event.full_price_count %>">
   </label><br><br>
 
-  <% if (event.children_friendly === 'yes') { %>
+  <% if (event.children_friendly === '1') { %>
     <label>Child Tickets ($<%= event.child_price.toFixed(2) %> each):
       <input type="number" name="child_qty" value="0" min="0"<%= event.child_price_count %>">
     </label><br><br>

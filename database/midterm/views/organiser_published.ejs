@@ -1,5 +1,9 @@
-<h1>Organiser Home Page</h1>
+<h1>Organiser <%= organiser %>'s Home Page</h1>
 <p><%= settings.site_name %> - <%= settings.site_description %></p>
+
+<form action="/logout" method="GET" style="margin-bottom: 20px;">
+  <button type="submit">Logout</button>
+</form>
 
 <a href="/organiser/settings">Site Settings</a> <br>
 
@@ -12,6 +16,7 @@
 <h2>Published Events</h2>
 <table border="1" cellpadding="5" cellspacing="0">
   <tr>
+    <th>Organiser</th>
     <th>Title</th>
     <th>Event description</th>
     <th>Difficulty</th>
@@ -28,10 +33,13 @@
   </tr>
   <% published.forEach(event => { %>
     <tr>
+        <td><%= event.organiser || '(No title)' %></td>
         <td><%= event.title || '(No title)' %></td>
         <td><%= event.description %></td>
         <td><%= event.difficulty %></td>
-        <td><%= event.children_friendly %></td>
+        <td>
+          <%= event.children_friendly === 0 ? "No" : "Yes" %>
+        </td>
         <td><%= event.event_date.split('T')[0] %></td>
         <td><%= event.created_at.split('T')[0] %></td>
         <td><%= event.published_at ? new Date(event.published_at).toLocaleString('en-GB', {
@@ -41,10 +49,10 @@
         <td>$<%= event.full_price_price %></td>
         <td><%= event.full_price_count %></td>
         <td>
-          <%= event.children_friendly === 'no' ? '-' : `$${event.child_price}` %>
+          <%= event.children_friendly === 0 ? '-' : `$${event.child_price}` %>
         </td>
         <td>
-          <%= event.children_friendly === 'no' ? '-' : event.child_price_count %>
+          <%= event.children_friendly === 0 ? '-' : event.child_price_count %>
         </td>
         <td><%= event.child_price_count + event.full_price_count %>/<%= event.max_capacity %> (<%= ((event.child_price_count + event.full_price_count) / event.max_capacity * 100).toFixed(2) %>%)</td>
       <td>
@@ -80,7 +88,9 @@
       <td><%= event.title || '(No title)' %></td>
       <td><%= event.description %></td>
       <td><%= event.difficulty %></td>
-      <td><%= event.children_friendly %></td>
+      <td>
+        <%= event.children_friendly === 0 ? "No" : "Yes" %>
+      </td>
       <td><%= event.event_date.split('T')[0] %></td>
       <td><%= event.created_at.split('T')[0] %></td>
       <td><%= new Date(event.updated_at).toLocaleString('en-GB', {
@@ -89,7 +99,7 @@
   }) %></td>
       <td>$<%= event.full_price_price %></td>
       <td>
-        <%= event.children_friendly === 'no' ? '-' : `$${event.child_price}` %>
+        <%= event.children_friendly === 0 ? '-' : `$${event.child_price}` %>
       </td>
       <td><%= event.max_capacity %></td>
       <td>

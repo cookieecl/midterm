@@ -1,13 +1,101 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Welcome to Sugar Rush Studio</title>
-    </head>
-    <body>
-        <h1>Welcome to Sugar Rush Studio</h1>
+<head>
+  <title><%=settings.site_name%></title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #fff6e1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    }
+
+    .wrapper {
+      position: relative;
+      width: 50%; /* shrink to 50% of screen */
+    }
+
+    .background-img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .overlay-content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #ffffff;
+      padding: 1rem;
+      box-sizing: border-box;
+    }
+
+    h1 {
+          font-size: 45px;
+          margin: 0;           /* Remove default margin */
+        line-height: 1.4;    /* Tighter line spacing */
+        text-shadow:
+        -2px -2px 0 #886859,
+        2px -2px 0 #886859,
+        -2px 2px 0 #886859,
+        2px 2px 0 #886859;
+    }
+
+    ul {
+  list-style: none;
+  padding: 0;
+  margin: 2rem 0 0 0;
+  display: flex;
+  gap: 2rem; /* space between the buttons */
+}
+
+li {
+  margin: 0;
+}
+
+a {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: bold;
+  text-decoration: none;
+  color: #ffffff;
+  font-size: 20px;
+  background-color: #a2b9cd;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  display: inline-block;
+  text-align: center;
+  line-height: 1.2; /* reduce vertical spacing between lines */
+  box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+  transition: background-color 0.3s ease;
+}
+
+a:hover {
+  background-color: #8aa1b5;
+}
+
+
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <img class="background-img" src="/images/border.png" alt="Border Image">
+    <div class="overlay-content">
+      <h1>WELCOME TO</h1>
+      <h1><%=settings.site_name%></h1>
         <ul>
-        <li><a href="/organiser">Organiser Home Page</a></li>
-        <li><a href="/attendee">Attendee Home Page</a></li>
+        <li><a href="/organiser">Organiser<br>Home Page</a></li>
+        <li><a href="/attendee">Attendee<br>Home Page</a></li>
         </ul>
-    </body>
+    </div>
+  </div>
+</body>
 </html>
