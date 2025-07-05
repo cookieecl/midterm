@@ -79,7 +79,7 @@ INSERT INTO events (title, description, status, event_date, created_at, updated_
 VALUES
   -- angelline
   ('Cupcake Basics', 'Learn to bake fluffy cupcakes with vanilla buttercream.', 'published', '2025-07-10T10:00:00', '2025-06-27T17:59:12', '2025-06-30T21:03:19', '2025-06-30T21:04:31', 'beginner', 1, 12, 7, 30.00, 4, 20.00, 'angelline'),
-  ('Macarons', 'French macarons with chocolate ganache filling.', 'draft', '2025-07-20T15:00:00', '2025-06-27T20:51:09', '2025-07-01T09:18:42', NULL, 'advance', 0, 12, 5, 45.00, 0, 0.00, 'angelline'),
+  ('Macarons', 'French macarons with chocolate ganache filling.', 'draft', '2025-07-20T15:00:00', '2025-06-27T20:51:09', '2025-07-01T09:18:42', NULL, 'advance', 0, 12, 0, 45.00, 0, 0.00, 'angelline'),
 
   -- emily
   ('Sourdough', 'All about the basics including starter and carving.', 'published', '2025-07-15T15:00:00', '2025-06-28T11:23:42', '2025-07-01T16:15:19', '2025-07-01T16:15:59', 'intermediate', 0, 8, 4, 35.00, 0, 18.00, 'emily'),

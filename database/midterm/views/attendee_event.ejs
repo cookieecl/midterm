@@ -1,54 +1,197 @@
-<h1>Attendee Event Page</h1>
-
-<h2><%= event.title %></h2>
-<p><%= event.description %></p>
-<p><strong>Instructor:</strong> <%= event.organiser %></p>
-<p><strong>Difficulty:</strong> <%= event.difficulty %></p>
-<p><strong>Date:</strong> <%= event.event_date %></p>
-<p><strong>Available tickets:</strong> <%= event.max_capacity - event.child_price_count - event.full_price_count %></p>
-
-<form method="POST">
-  <label>Your Name:
-    <input type="text" name="attendee_name" required>
-  </label><br><br>
-
-  <label>Adult Tickets ($<%= event.full_price_price.toFixed(2) %> each):
-    <input type="number" name="full_price_qty" value="0" min="0"<%= event.full_price_count %>">
-  </label><br><br>
-
-  <% if (event.children_friendly === '1') { %>
-    <label>Child Tickets ($<%= event.child_price.toFixed(2) %> each):
-      <input type="number" name="child_qty" value="0" min="0"<%= event.child_price_count %>">
-    </label><br><br>
-  <% } %>
-
-  <button type="submit">Book</button>
-</form>
-
-<% if (error) { %>
-  <p style="color:red;"><%= error %></p>
-<% } %>
-
-<a href="/attendee">Back to Event List</a>
-
-<script>
-  const form = document.querySelector('form');
-  form.addEventListener('submit', function (e) {
-    const max = parseInt("<%= event.max_capacity - event.full_price_count - event.child_price_count %>", 10);
-    const adult = parseInt(form.full_price_qty.value) || 0;
-    const child = parseInt(form.child_qty?.value) || 0;
-
-    if (max == 0) {
-      e.preventDefault();
-      alert(`Sorry, this event is fully booked!`);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Attendee Event Page</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background-color: #fff6e1;
+      font-family: 'Quicksand', sans-serif;
+      color: #4b3b2a;
     }
-    else if (adult + child > max) {
-      e.preventDefault();
-      alert(`You cannot book more than ${max} tickets in total.`);
+
+    header {
+      background-color: #a2b9cd;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      flex-wrap: wrap;
     }
-    else if (adult + child == 0) {
-      e.preventDefault();
-      alert(`Select a minimum of 1 ticket to book.`);
+
+    .header-left {
+      flex: 1 1 auto;
     }
-  });
-</script>
+
+    .header-title {
+      font-size: 2.2rem;
+      font-weight: bold;
+    }
+
+    .header-subtitle {
+      font-size: 0.9rem;
+      margin-top: 0.3rem;
+    }
+    
+    .header-links {
+      flex: 1 1 auto;
+      display: flex;
+      gap: 0.5rem;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .header-links form,
+    .header-links a {
+      margin: 0;
+    }
+
+    .header-button {
+      background-color: #fff;
+      color: #4b3b2a;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      text-decoration: none;
+      display: inline-block;
+      transition: background-color 0.3s;
+    }
+
+    .header-button:hover {
+      background-color: #e5e5e5;
+    }
+
+    .main {
+      padding: 2rem;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #a2b9cd;
+      padding-bottom: 0.5rem;
+    }
+
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.25rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-family: 'Quicksand', sans-serif;
+    }
+
+    button {
+      margin-top: 1.5rem;
+      padding: 0.7rem 1.2rem;
+      background-color: #8b5e3c;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    button:hover {
+      background-color: #754a2e;
+    }
+
+    #back-button {
+      display: inline-block;
+      margin-top: 2rem;
+      color: #4b3b2a;
+      text-decoration: underline;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <div class="header-title">Attendee Event Page</div>
+      <div class="header-subtitle"><%= settings.site_name %> - <%= settings.site_description %></div>
+    </div>
+    <div class="header-links">
+      <a class="header-button" href="/">Home</a>
+    </div>
+  </header>
+
+  <div class="main">
+    <h1><%= event.title %></h1>
+    <p><%= event.description %></p>
+    <p><strong>Instructor:</strong> <%= event.organiser %></p>
+    <p><strong>Difficulty:</strong> <%= event.difficulty %></p>
+    <p><strong>Date:</strong> <%= event.event_date %></p>
+    <p><strong>Available tickets:</strong> <%= event.max_capacity - event.child_price_count - event.full_price_count %></p>
+
+    <form method="POST">
+      <label>Your Name:
+        <input type="text" name="attendee_name" required>
+      </label>
+
+      <label>Adult Tickets ($<%= event.full_price_price.toFixed(2) %> each):
+        <input type="number" name="full_price_qty" value="0" min="0">
+      </label>
+
+      <% if (event.children_friendly === '1') { %>
+        <label>Child Tickets ($<%= event.child_price.toFixed(2) %> each):
+          <input type="number" name="child_qty" value="0" min="0">
+        </label>
+      <% } %>
+
+      <button type="submit">Book</button>
+    </form>
+
+    <% if (error) { %>
+      <p style="color:red;"><%= error %></p>
+    <% } %>
+
+    <% if (fromOrganiser) { %>
+      <a href="/organiser" id="back-button">← Back to organiser home</a>
+    <% } else { %>
+      <a href="/attendee" id="back-button">← Back to attendee home</a>
+    <% } %>
+
+  </div>
+
+  <script>
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function (e) {
+      const max = parseInt("<%= event.max_capacity - event.full_price_count - event.child_price_count %>", 10);
+      const adult = parseInt(form.full_price_qty.value) || 0;
+      const child = parseInt(form.child_qty?.value) || 0;
+
+      if (max == 0) {
+        e.preventDefault();
+        alert(`Sorry, this event is fully booked!`);
+      }
+      else if (adult + child > max) {
+        e.preventDefault();
+        alert(`You cannot book more than ${max} tickets in total.`);
+      }
+      else if (adult + child == 0) {
+        e.preventDefault();
+        alert(`Select a minimum of 1 ticket to book.`);
+      }
+    });
+  </script>
+</body>
+</html>

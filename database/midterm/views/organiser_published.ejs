@@ -114,156 +114,440 @@
     </tr>
   <% }); %>
 </table> -->
-
 <!DOCTYPE html>
 <html>
 <head>
-  <title><%= settings.site_name %> - Organiser Home</title>
-  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+  <title>Organiser <%= organiser %>'s Home Page</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
       background-color: #fff6e1;
-      font-family: 'Patrick Hand', cursive;
-      color: #4a3b2c;
+      font-family: 'Quicksand', sans-serif;
+      color: #4b3b2a;
     }
 
-    .header {
+    header {
       background-color: #a2b9cd;
       color: white;
-      padding: 1rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding: 1rem 2rem;
+      flex-wrap: wrap;
     }
 
-    .header h1 {
+        h2 {
+      font-size: 2rem;
+      margin-top: 2rem;
+      border-bottom: 2px solid #a2b9cd;
+      padding-bottom: 0.5rem;
+    }
+
+    .header-left {
+      flex: 1 1 auto;
+    }
+
+    .header-title {
+      font-size: 2.2rem;
+      font-weight: bold;
+    }
+
+    .header-subtitle {
+      font-size: 0.9rem;
+      margin-top: 0.3rem;
+    }
+
+    .header-links {
+      flex: 1 1 auto;
+      display: flex;
+      gap: 0.5rem;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .header-links form,
+    .header-links a {
       margin: 0;
-      font-size: 1.8rem;
     }
 
-    .header a {
-      color: white;
+    .header-button {
+      background-color: #fff;
+      color: #4b3b2a;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
       text-decoration: none;
-      margin-left: 1rem;
+      display: inline-block;
+      transition: background-color 0.3s;
     }
 
-    .container {
+    .header-button:hover {
+      background-color: #e5e5e5;
+    }
+
+    .main {
       padding: 2rem;
     }
 
-    .create-btn {
+    .create-event {
       display: inline-block;
-      background-color: #8c5e4f;
-      color: white;
-      padding: 0.6rem 1.2rem;
-      margin-bottom: 1rem;
-      border-radius: 6px;
-      text-decoration: none;
+      padding: 0.75rem 1.5rem;
+      font-size: 1.2rem;
+      cursor: pointer;
+      background-color: #8b5e3c;
+      color: #fff8f0;
+      border-radius: 8px;
+      border: none;
+      font-weight: bold;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: background-color 0.3s;
     }
 
-    h2 {
-      font-size: 1.4rem;
+    .create-event:hover {
+      background-color: #754a2e;
+    }
+
+    .header-toggle-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      /* Remove margin-top */
+      /* Add margin-bottom same as h2 */
+      margin-bottom: 2rem;
+
+      /* Keep border-bottom and padding as before */
       border-bottom: 2px solid #a2b9cd;
-      display: inline-block;
-      padding-bottom: 0.3rem;
+      padding-bottom: 0.5rem;
+    }
+
+    .header-toggle-container h2 {
+      /* margin: 0; Remove default margin */
+      border-bottom: 0;
+      margin-bottom: 0;
+      font-size: 2rem;
+      text-transform: capitalize;
+    }
+
+
+    /* Toggle switch styles */
+    .toggle-switch {
+      position: relative;
+      width: 50px;
+      height: 24px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      background-color: #ccc;
+      border-radius: 34px;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      transition: 0.4s;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      border-radius: 50%;
+      transition: 0.4s;
+    }
+
+
+    .toggle-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem; /* space between text and toggle */
       margin-top: 2rem;
     }
 
+    .toggle-label {
+      font-size: 1rem;
+      color: #4b3b2a;
+      user-select: none;
+    }
+
+    .toggle-switch input:checked + .slider {
+      background-color: #8b5e3c;
+    }
+
+    .toggle-switch input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+
+
+    .event-section {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      gap: 1rem;
+      padding-bottom: 1rem;
+      scroll-padding-left: 2rem;
+    }
+
     .event-card {
-      border: 2px solid #d9c6b0;
+      flex: 0 0 280px;
+      scroll-snap-align: start;
+      background: white;
+      border-radius: 10px;
+      border: 2px solid #ddd;
       padding: 1rem;
-      margin-bottom: 1rem;
-      background: #fff;
-      width: 90%;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 0.3rem;
     }
 
     .event-card p {
-      margin: 0.3rem 0;
+      margin: 0;
+      font-size: 0.95rem;
     }
 
-    .event-actions a, .event-actions form {
-      display: inline-block;
-      margin-right: 0.5rem;
+    .event-card p strong {
+      font-size: 1.1rem;
+      display: block;
+      margin-bottom: 0.5rem;
     }
 
-    .event-actions button {
-      background-color: #a2b9cd;
-      border: none;
-      padding: 0.4rem 0.8rem;
-      border-radius: 4px;
+    .event-card .section {
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
+      border-top: 1px dashed #ccc;
+    }
+
+    .actions {
+      margin-top: 0.75rem;
+      font-size: 0.9rem;
+    }
+
+    .actions a p,
+    .actions span p,
+    .actions form {
+      display: inline;
+    }
+
+    .actions a p {
+      color: #34545b;
+      font-weight: bold;
+    }
+
+    button {
+      font-family: 'Quicksand', sans-serif;
+      font-size: 1rem;
       cursor: pointer;
-      color: white;
-      font-family: 'Patrick Hand', cursive;
     }
+
+    .disabled-delete {
+      color: gray;
+      font-weight: bold;
+      cursor: not-allowed;
+      text-decoration: underline;
+    }
+    .disabled-delete:hover {
+      color: gray;
+    }
+
   </style>
 </head>
 <body>
-  <div class="header">
-    <h1>Organiser <%= organiser %>'s Home Page</h1>
-    <div>
-      <a href="/organiser/settings">Site Settings</a>
-      <form action="/logout" method="GET" style="display:inline;">
-        <button type="submit" style="background:none; border:none; color:white; cursor:pointer; font-family:'Patrick Hand';">Log out</button>
+  <header>
+    <div class="header-left">
+      <div class="header-title">organiser <%= organiser %>'s home page</div>
+      <div class="header-subtitle"><%= settings.site_name %> - <%= settings.site_description %></div>
+    </div>
+    <div class="header-links">
+      <a class="header-button" href="/organiser/settings">Site Settings</a>
+      <a class="header-button" href="/">Home</a>
+      <form action="/logout" method="GET">
+        <button class="header-button" type="submit">Log Out</button>
       </form>
     </div>
-  </div>
+  </header>
 
-  <div class="container">
-    <p><%= settings.site_name %> - <%= settings.site_description %></p>
-
-    <a class="create-btn" href="/organiser/events/create" onclick="event.preventDefault(); document.getElementById('create-form').submit();">create new event</a>
+  <div class="main">
     <form id="create-form" action="/organiser/events/create" method="POST" style="display:none;"></form>
+    <a href="/organiser/events/create" onclick="event.preventDefault(); document.getElementById('create-form').submit();">
+      <div class="create-event">create new event</div>
+    </a>
 
-    <h2>published events</h2>
-    <% published.forEach(event => { %>
-      <div class="event-card">
-        <p><strong><%= event.title || '(No title)' %></strong></p>
-        <p>→ <%= event.description %></p>
-        <p>organiser: <%= event.organiser %></p>
-        <p>difficulty: <%= event.difficulty %></p>
-        <p><%= event.children_friendly === 0 ? 'not children friendly' : 'children friendly' %></p>
-        <p>date: <%= event.event_date.split('T')[0] %></p>
-        <p>tickets booked: <%= event.child_price_count + event.full_price_count %>/<%= event.max_capacity %> (
-          <%= ((event.child_price_count + event.full_price_count) / event.max_capacity * 100).toFixed(2) %>% )</p>
-        <p>full price tickets: <%= event.full_price_count %> ($<%= event.full_price_price %>)</p>
-        <p>child tickets: <%= event.children_friendly === 0 ? '-' : `${event.child_price_count} ($${event.child_price})` %></p>
-        <p>published at: <%= event.published_at ? new Date(event.published_at).toLocaleDateString() : '---' %></p>
-        <p>created at: <%= event.created_at.split('T')[0] %></p>
-        <div class="event-actions">
-          <a href="/organiser/events/edit/<%= event.id %>">details</a>
-          <a href="/attendee/event/<%= event.id %>">attendee page</a>
-          <form action="/organiser/events/delete/<%= event.id %>" method="POST">
-            <button onclick="return confirm('Delete this event?');">delete event</button>
-          </form>
-        </div>
+    <!-- Replaced published events h2 with flex container including toggle -->
+    <div class="header-toggle-container">
+      <h2>published events</h2>
+      <div class="toggle-wrapper">
+        <span class="toggle-label">show all</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="publishedToggle"">
+          <span class="slider"></span>
+        </label>
       </div>
-    <% }) %>
+    </div>
+
+<!-- Published events container (shown by default if toggle unchecked) -->
+<div id="publishedEvents" class="event-section" style="display: flex">
+  <% published.forEach(event => { %>
+    <div class="event-card">
+      <p><strong><%= event.title || '(No title)' %></strong></p>
+      <p>→ <%= event.description %></p>
+      <div class="section">
+        <p>👨 Organiser: <%= event.organiser %></p>
+        <p>📅 Date: <%= event.event_date.split('T')[0] %></p>
+        <p>🎯 Difficulty: <%= event.difficulty %></p>
+        <p><%= event.children_friendly === 0 ? '🚫 Not children friendly' : '👶 Children friendly' %></p>
+      </div>
+      <div class="section">
+        <p>🎟️ Booked: <%= event.child_price_count + event.full_price_count %>/<%= event.max_capacity %> 
+          (<%= ((event.child_price_count + event.full_price_count) / event.max_capacity * 100).toFixed(2) %>%)</p>
+        <p>💰 Full price: <%= event.full_price_count %> × $<%= event.full_price_price %></p>
+        <p>🧒 Child: <%= event.children_friendly === 0 ? '-' : `${event.child_price_count} × $${event.child_price}` %></p>
+      </div>
+      <div class="section">
+        <p>📤 Published: <%= event.published_at ? new Date(event.published_at).toLocaleString('en-GB') : '--/--/----' %></p>
+        <p>🗓️ Created: <%= event.created_at.split('T')[0] %></p>
+      </div>
+        <div class="actions">
+          <a href="/organiser/events/edit/<%= event.id %>"><p>details</p></a> |
+          <a href="/attendee/event/<%= event.id %>?from=organiser"><p>attendee page</p></a> |
+
+          <% if (event.full_price_count + event.child_price_count > 0) { %>
+            <span class="disabled-delete" title="Cannot delete event with active bookings"><p>delete event</p></span>
+          <% } else { %>
+            <a href="#" onclick="confirmDelete('<%= event.id %>')"><p>delete event</p></a>
+            <form id="delete-form-<%= event.id %>" action="/organiser/events/delete/<%= event.id %>" method="POST" style="display:none;"></form>
+          <% } %>
+        </div>
+
+    </div>
+  <% }); %>
+</div>
+
+<!-- Show all events container (hidden by default if toggle unchecked) -->
+<div id="showAllEvents" class="event-section" style="display: none">
+  <% publishedAll.forEach(event => { %>
+    <div class="event-card">
+      <p><strong><%= event.title || '(No title)' %></strong></p>
+      <p>→ <%= event.description %></p>
+      <div class="section">
+        <p>👨 Organiser: <%= event.organiser %></p>
+        <p>📅 Date: <%= event.event_date.split('T')[0] %></p>
+        <p>🎯 Difficulty: <%= event.difficulty %></p>
+        <p><%= event.children_friendly === 0 ? '🚫 Not children friendly' : '👶 Children friendly' %></p>
+      </div>
+      <div class="section">
+        <p>🎟️ Booked: <%= event.child_price_count + event.full_price_count %>/<%= event.max_capacity %> 
+          (<%= ((event.child_price_count + event.full_price_count) / event.max_capacity * 100).toFixed(2) %>%)</p>
+        <p>💰 Full price: <%= event.full_price_count %> × $<%= event.full_price_price %></p>
+        <p>🧒 Child: <%= event.children_friendly === 0 ? '-' : `${event.child_price_count} × $${event.child_price}` %></p>
+      </div>
+      <div class="section">
+        <p>📤 Published: <%= event.published_at ? new Date(event.published_at).toLocaleString('en-GB') : '--/--/----' %></p>
+        <p>🗓️ Created: <%= event.created_at.split('T')[0] %></p>
+      </div>
+      <div class="actions">
+          <a href="/organiser/events/edit/<%= event.id %>"><p>details</p></a> |
+          <a href="/attendee/event/<%= event.id %>?from=organiser"><p>attendee page</p></a> |
+
+          <% if (event.organiser !== organiser) { %>
+            <span class="disabled-delete" title="Cannot delete other organiser's event"><p>delete event</p></span>
+          <% } else if (event.full_price_count + event.child_price_count > 0) { %>
+            <span class="disabled-delete" title="Cannot delete event with active bookings"><p>delete event</p></span>
+          <% } else { %>
+            <a href="#" onclick="confirmDelete('<%= event.id %>')"><p>delete event</p></a>
+            <form id="delete-form-<%= event.id %>" action="/organiser/events/delete/<%= event.id %>" method="POST" style="display:none;"></form>
+          <% } %>
+        </div>
+    </div>
+  <% }); %>
+</div>
 
     <h2>draft events</h2>
-    <% drafts.forEach(event => { %>
-      <div class="event-card">
-        <p><strong><%= event.title || '(No title)' %></strong></p>
-        <p>→ <%= event.description %></p>
-        <p>difficulty: <%= event.difficulty %></p>
-        <p><%= event.children_friendly === 0 ? 'not children friendly' : 'children friendly' %></p>
-        <p>date: <%= event.event_date.split('T')[0] %></p>
-        <p>created at: <%= event.created_at.split('T')[0] %></p>
-        <p>updated at: <%= new Date(event.updated_at).toLocaleDateString() %></p>
-        <p>full price: $<%= event.full_price_price %></p>
-        <p>child price: <%= event.children_friendly === 0 ? '-' : `$${event.child_price}` %></p>
-        <p>tickets available: <%= event.max_capacity %></p>
-        <div class="event-actions">
-          <a href="/organiser/events/edit/<%= event.id %>">edit</a>
-          <form action="/organiser/events/publish/<%= event.id %>" method="POST">
-            <button>publish</button>
-          </form>
-          <form action="/organiser/events/delete/<%= event.id %>" method="POST">
-            <button onclick="return confirm('Delete this draft?');">delete</button>
-          </form>
+    <div class="event-section">
+      <% drafts.forEach(event => { %>
+        <div class="event-card">
+          <p><strong><%= event.title || '(No title)' %></strong></p>
+          <p>→ <%= event.description %></p>
+
+          <div class="section">
+            <p>🎯 Difficulty: <%= event.difficulty %></p>
+            <p><%= event.children_friendly === 0 ? '🚫 Not children friendly' : '👶 Children friendly' %></p>
+            <p>📅 Date: <%= event.event_date.split('T')[0] %></p>
+          </div>
+
+          <div class="section">
+            <p>🗓️ Created: <%= event.created_at.split('T')[0] %></p>
+            <p>🔄 Updated: <%= new Date(event.updated_at).toLocaleString('en-GB') %></p>
+          </div>
+
+          <div class="section">
+            <p>🎟️ Capacity: <%= event.max_capacity %></p>
+            <p>💰 Full: <%= event.full_price_count || 0 %> × $<%= event.full_price_price %></p>
+            <p>🧒 Child: <%= event.children_friendly === 0 ? '-' : `$${event.child_price}` %></p>
+          </div>
+
+          <div class="actions">
+            <a href="/organiser/events/edit/<%= event.id %>"><p>edit</p></a> |
+            <a href="#" onclick="event.preventDefault(); document.getElementById('publish-form-<%= event.id %>').submit();"><p>publish</p></a> |
+            <form id="publish-form-<%= event.id %>" action="/organiser/events/publish/<%= event.id %>" method="POST" style="display:none;"></form>
+            <a href="#" onclick="confirmDelete('<%= event.id %>')"><p>delete event</p></a>
+            <form id="delete-form-<%= event.id %>" action="/organiser/events/delete/<%= event.id %>" method="POST" style="display:none;"></form>
+          </div>
         </div>
-      </div>
-    <% }) %>
+      <% }); %>
+    </div>
   </div>
+  <script>
+      window.addEventListener('DOMContentLoaded', () => {
+    const toggle = document.getElementById('publishedToggle');
+    toggle.checked = false; // always start as unchecked
+  });
+  const toggle = document.getElementById('publishedToggle');
+  const publishedContainer = document.getElementById('publishedEvents');
+  const showAllContainer = document.getElementById('showAllEvents');
+
+  toggle.addEventListener('change', () => {
+    if (toggle.checked) {
+      showAllContainer.style.display = 'flex';
+      publishedContainer.style.display = 'none';
+      // Update URL to keep toggle state on refresh
+      const url = new URL(window.location);
+      url.searchParams.set('showAll', 'true');
+      window.history.replaceState(null, '', url);
+    } else {
+      showAllContainer.style.display = 'none';
+      publishedContainer.style.display = 'flex';
+      const url = new URL(window.location);
+      url.searchParams.delete('showAll');
+      window.history.replaceState(null, '', url);
+    }
+  });
+
+  function confirmDelete(eventId) {
+    if (confirm('Delete this event?')) {
+      document.getElementById(`delete-form-${eventId}`).submit();
+    }
+  }
+</script>
 </body>
 </html>
+
+
+
+

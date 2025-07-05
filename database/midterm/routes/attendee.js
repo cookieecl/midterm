@@ -23,7 +23,7 @@ router.get('/', (req, res) => {
 
 router.get('/event/:id', (req, res) => {
     const eventId = req.params.id;
-
+    const sqlSettings = `SELECT * FROM settings WHERE id = 1`;
     const query = `SELECT * FROM events WHERE id = ? AND status = 'published'`;
 
     db.get(query, [eventId], (err, event) => {
@@ -34,8 +34,20 @@ router.get('/event/:id', (req, res) => {
         if (!event) {
             return res.status(404).send("Event not found.");
         }
-
-        res.render('attendee_event', { event, error: null });
+        
+        global.db.get(sqlSettings, [], (err3, settings) => {
+        if (err3 || !settings) {
+          console.error(err3 || 'Settings not found');
+          return res.status(500).send("Settings DB error");
+        }
+        
+        res.render('attendee_event', {
+        event,
+        settings,
+        fromOrganiser: req.query.from === 'organiser',
+        error: null
+        });
+      });
     });
 });
 

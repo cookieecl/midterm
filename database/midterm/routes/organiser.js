@@ -7,14 +7,15 @@ router.use(ensureOrganiser);
 // GET /organiser - Organiser Home Page
 router.get('/', (req, res) => {
   const organiser = req.session.organiserUsername;
-  const sqlPublished = `SELECT * FROM events WHERE status = 'published' ORDER BY event_date ASC`;
+  const sqlPublishedAll = `SELECT * FROM events WHERE status = 'published' ORDER BY event_date ASC`;
+  const sqlPublished = `SELECT * FROM events WHERE status = 'published' AND organiser = ? ORDER BY event_date ASC`;
   const sqlDrafts = `SELECT * FROM events WHERE status = 'draft' AND organiser = ? ORDER BY event_date ASC`;
   const sqlSettings = `SELECT * FROM settings WHERE id = 1`;
 
-  global.db.all(sqlPublished, [], (err1, published) => {
+  global.db.all(sqlPublishedAll, [], (err1, publishedAll) => {
     if (err1) {
       console.error(err1);
-      return res.status(500).send("DB error (published)");
+      return res.status(500).send("DB error (publishedAll)");
     }
 
     // Get this organiser's draft events
@@ -31,11 +32,20 @@ router.get('/', (req, res) => {
           return res.status(500).send("DB error (settings)");
         }
 
-        res.render('organiser_published', {
-          drafts,
-          published,
-          settings,
-          organiser
+        global.db.all(sqlPublished, [organiser], (err4, published) => {
+          if (err4) {
+            console.error(err4);
+            return res.status(500).send("DB error (published)");
+          }
+
+          res.render('organiser_published', {
+            drafts,
+            published,
+            settings,
+            organiser,
+            publishedAll,
+            showAll: 0
+          });
         });
       });
     });
@@ -68,43 +78,49 @@ router.post('/events/create', (req, res) => {
 });
 
 // Route to render the edit page (both for new and existing event)
-// Route to render the edit page (both for new and existing event)
 router.get('/events/edit/:id', (req, res) => {
-    const id = req.params.id;
-    const sqlEvent = `SELECT * FROM events WHERE id = ?`;
-    const sqlBookings = `SELECT attendee_name, full_price_qty, child_qty FROM bookings WHERE event_id = ?`;
+  const id = req.params.id;
+  const sqlEvent = `SELECT * FROM events WHERE id = ?`;
+  const sqlBookings = `SELECT attendee_name, full_price_qty, child_qty FROM bookings WHERE event_id = ?`;
+  const sqlSettings = `SELECT * FROM settings WHERE id = 1`;
 
-    global.db.get(sqlEvent, [id], (err, eventRow) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).send("DB error");
-      }
-      if (!eventRow) {
-        return res.status(404).send("Event not found");
-      }
-  
-      const justCreated = req.query.new === 'true';
-      const readOnly = eventRow.status === 'published';
-  
-      // Now fetch all bookings (attendees) for this event
+  global.db.get(sqlEvent, [id], (err, eventRow) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send("DB error");
+    }
+    if (!eventRow) {
+      return res.status(404).send("Event not found");
+    }
 
-      global.db.all(sqlBookings, [id], (err2, attendees) => {
-        if (err2) {
-          console.error(err2);
-          return res.status(500).send("Booking lookup failed");
+    const justCreated = req.query.new === 'true';
+    const readOnly = eventRow.status === 'published';
+
+    global.db.all(sqlBookings, [id], (err2, attendees) => {
+      if (err2) {
+        console.error(err2);
+        return res.status(500).send("Booking lookup failed");
+      }
+
+      // ✅ Fetch settings inside here
+      global.db.get(sqlSettings, [], (err3, settings) => {
+        if (err3 || !settings) {
+          console.error(err3 || 'Settings not found');
+          return res.status(500).send("Settings DB error");
         }
-  
-        // Render the page passing event info, readOnly flag, justCreated flag, and the attendees list
+
         res.render('event_edit', {
           event: eventRow,
           organiserName: eventRow.organiser,
           justCreated,
           readOnly,
-          attendees
+          attendees,
+          settings
         });
       });
     });
   });
+});
 
 
 // Route to handle edit form submission (update event)
@@ -184,9 +200,6 @@ router.post('/events/edit/:id', (req, res) => {
     });
   });
 });
-
-
-  
 
 // Delete event
 router.post('/events/delete/:id', (req, res) => {

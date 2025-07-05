@@ -1,150 +1,318 @@
-<h1>Organiser Edit Event Page</h1>
-<p><strong>Organiser:</strong> <%= organiserName %></p>
-<p>created at: <%= new Date(event.created_at).toLocaleString('en-GB', {
-    year: 'numeric', month: '2-digit', day: '2-digit',
-    hour: '2-digit', minute: '2-digit', second: '2-digit'
-  }) %></p>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Organiser Edit Event Page - <%= event.title || "Untitled" %></title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background-color: #fff6e1;
+      font-family: 'Quicksand', sans-serif;
+      color: #4b3b2a;
+    }
 
-<% if (!readOnly) { %>
-  <p>last updated at: <%= new Date(event.updated_at).toLocaleString('en-GB', {
-    year: 'numeric', month: '2-digit', day: '2-digit',
-    hour: '2-digit', minute: '2-digit', second: '2-digit'
-  }) %></p>
-  <% } else {%>
-    <p>published at: <%= new Date(event.published_at).toLocaleString('en-GB', {
-    year: 'numeric', month: '2-digit', day: '2-digit',
-    hour: '2-digit', minute: '2-digit', second: '2-digit'
-  }) %></p>
-<% } %>
+    header {
+      background-color: #a2b9cd;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      flex-wrap: wrap;
+    }
+
+    .header-left {
+      flex: 1 1 auto;
+    }
+
+    .header-title {
+      font-size: 2.2rem;
+      font-weight: bold;
+    }
+
+    .header-subtitle {
+      font-size: 0.9rem;
+      margin-top: 0.3rem;
+    }
 
 
-<form id="edit-form" method="POST">
-  <label>Title: <input name="title" value="<%= event.title %>" <%= readOnly ? 'readonly' : '' %> required></label><br>
-  <label>Description:<br><textarea name="description" <%= readOnly ? 'readonly' : '' %>><%= event.description %></textarea></label><br>
-  <label>Status:
-    <select name="status" <%= readOnly ? 'disabled' : '' %>>
-      <option value="draft" <%= event.status === 'draft' ? 'selected' : '' %>>Draft</option>
-      <option value="published" <%= event.status === 'published' ? 'selected' : '' %>>Published</option>
-    </select>
-  </label><br>
-  <label>Event Date: <input type="date" name="event_date" value="<%= event.event_date.split('T')[0] %>" <%= readOnly ? 'readonly' : '' %> required></label><br>
-  <label>Difficulty:
-    <select name="difficulty" <%= readOnly ? 'disabled' : '' %>>
-      <option value="beginner" <%= event.difficulty === 'beginner' ? 'selected' : '' %>>Beginner</option>
-      <option value="intermediate" <%= event.difficulty === 'intermediate' ? 'selected' : '' %>>Intermediate</option>
-      <option value="advance" <%= event.difficulty === 'advance' ? 'selected' : '' %>>Advance</option>
-    </select>
-  </label><br>
-  <label>Children Friendly:
-    <select name="children_friendly" <%= readOnly ? 'disabled' : '' %>>
-      <option value="1" <%= event.children_friendly === 1 ? 'selected' : '' %>>Yes</option>
-      <option value="0" <%= event.children_friendly === 0 ? 'selected' : '' %>>No</option>
-    </select>
-  </label><br>
-  <label>Max Capacity: <input type="number" name="max_capacity" value="<%= event.max_capacity %>" min="1" <%= readOnly ? 'readonly' : '' %> required></label><br>
-  <p><strong>Full Price Ticket Count:</strong> <%= event.full_price_count %></p>
-  <!-- <label>Full Price Ticket Count: <input type="number" name="full_price_count" value="<%= event.full_price_count %>" readonly></label><br> -->
-  <label>Full Price Ticket Price: <input type="number" step="0.01" name="full_price_price" value="<%= event.full_price_price %>" min="0" <%= readOnly ? 'readonly' : '' %> required></label><br>
-  <!-- <label>Child Ticket Count: <input type="number" name="child_price_count" value="<%= event.child_price_count %>" min="0" required></label><br> -->
-  <div id="child-ticket-fields">
-    <!-- <label>Child Ticket Count: 
-      <input type="number" name="child_price_count" value="<%= event.child_price_count %>" readonly>
-    </label><br> -->
-    <p><strong>Child Ticket Count:</strong> <%= event.child_price_count %></p>
-    <label>Child Ticket Price: 
-      <input type="number" step="0.01" name="child_price" value="<%= event.child_price %>" min="0" <%= readOnly ? 'readonly' : '' %> required>
-    </label><br>
-  </div>
-  <!-- <label>Child Ticket Price: <input type="number" step="0.01" name="child_price" value="<%= event.child_price %>" min="0" required></label><br> -->
-  
-  <% if (!readOnly) { %>
-    <button type="submit">Submit Changes</button>
-  <% } else {%>
-    <h2>Attendees</h2>
+    .header-button {
+      background-color: #fff;
+      color: #4b3b2a;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s;
+    }
 
-    <% if (attendees.length === 0) { %>
-      <p>No one has booked this class yet.</p>
+    .header-button:hover {
+      background-color: #e5e5e5;
+    }
+
+    .main {
+      padding: 2rem;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #a2b9cd;
+      padding-bottom: 0.5rem;
+    }
+
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.25rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-family: 'Quicksand', sans-serif;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    .readonly-block {
+      margin-top: 2rem;
+      padding: 1rem;
+      background-color: #fff8ef;
+      border: 1px solid #e0d4c1;
+      border-radius: 10px;
+    }
+
+    .readonly-block h3 {
+      margin-top: 0;
+      font-size: 1.2rem;
+      color: #4b3b2a;
+      border-bottom: 2px solid #a2b9cd;
+      padding-bottom: 0.3rem;
+    }
+
+    .readonly-field {
+      margin: 0.75rem 0;
+      line-height: 1.4;
+    }
+
+    button {
+      margin-top: 1.5rem;
+      padding: 0.7rem 1.2rem;
+      background-color: #8b5e3c;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    button:hover {
+      background-color: #754a2e;
+    }
+
+    #back-button {
+      display: inline-block;
+      margin-top: 2rem;
+      color: #4b3b2a;
+      text-decoration: underline;
+      font-weight: bold;
+    }
+
+    table.attendee-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1.5rem;
+      font-size: 0.95rem;
+      background-color: #fff;
+      border: 1px solid #ccc;
+    }
+
+    .attendee-table th {
+      background-color: #a2b9cd;
+      color: white;
+      padding: 0.75rem;
+      text-align: left;
+    }
+
+    .attendee-table td {
+      padding: 0.7rem;
+      border-top: 1px solid #eee;
+    }
+
+    .attendee-table tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <div class="header-title">organiser edit event page</div>
+      <div class="header-subtitle"><%= settings.site_name %> - <%= settings.site_description %></div>
+    </div>
+  </header>
+
+  <div class="main">
+    <h1><%= event.title || "Organiser Edit Event Page" %></h1>
+    <div class="readonly-field"><strong>Organiser:</strong> <%= organiserName %></div>
+    <div class="readonly-field">Created at: <%= new Date(event.created_at).toLocaleString('en-GB') %></div>
+
+    <% if (!readOnly) { %>
+      <div class="readonly-field">Last updated at: <%= new Date(event.updated_at).toLocaleString('en-GB') %></div>
     <% } else { %>
-      <table border="1">
-        <tr>
-          <th>Name</th>
-          <th>Adult Tickets</th>
-          <th>Child Tickets</th>
-        </tr>
-        <% attendees.forEach(att => { %>
-          <tr>
-            <td><%= att.attendee_name %></td>
-            <td><%= att.full_price_qty %></td>
-            <td><%= att.child_qty %></td>
-          </tr>
-        <% }) %>
-      </table>
+      <div class="readonly-field">Published at: <%= new Date(event.published_at).toLocaleString('en-GB') %></div>
     <% } %>
-    
-    <%}
-    %>
 
-</form>
+    <form id="edit-form" method="POST">
+      <% if (readOnly) { %>
+        <div class="readonly-block">
+          <h3>📦 Basic Info</h3>
+          <div class="readonly-field"><strong>Title:</strong> <%= event.title %></div>
+          <div class="readonly-field"><strong>Description:</strong> <%= event.description %></div>
+          <div class="readonly-field"><strong>Status:</strong> <%= event.status %></div>
+          <div class="readonly-field"><strong>Event Date:</strong> <%= event.event_date.split('T')[0] %></div>
+          <div class="readonly-field"><strong>Difficulty:</strong> <%= event.difficulty %></div>
+          <div class="readonly-field"><strong>Children Friendly:</strong> <%= event.children_friendly === 1 ? "Yes" : "No" %></div>
+        </div>
 
-<a href="/organiser" id="back-button">Back to Organiser Home</a>
+        <div class="readonly-block">
+          <h3>🎟 Ticket Info</h3>
+          <div class="readonly-field"><strong>Max Capacity:</strong> <%= event.max_capacity %></div>
+          <div class="readonly-field"><strong>Full Price Ticket Count:</strong> <%= event.full_price_count %></div>
+          <div class="readonly-field"><strong>Full Price Ticket Price:</strong> $<%= event.full_price_price %></div>
+          <% if (event.children_friendly === 1) { %>
+            <div class="readonly-field"><strong>Child Ticket Count:</strong> <%= event.child_price_count %></div>
+            <div class="readonly-field"><strong>Child Ticket Price:</strong> $<%= event.child_price %></div>
+          <% } %>
+        </div>
+      <% } else { %>
+        <!-- Editable Form -->
+        <label>Title: <input name="title" value="<%= event.title %>" required></label>
+        <label>Description:<br><textarea name="description"><%= event.description %></textarea></label>
+        <label>Status:
+          <select name="status">
+            <option value="draft" <%= event.status === 'draft' ? 'selected' : '' %>>Draft</option>
+            <option value="published" <%= event.status === 'published' ? 'selected' : '' %>>Published</option>
+          </select>
+        </label>
+        <label>Event Date: <input type="date" name="event_date" value="<%= event.event_date.split('T')[0] %>" required></label>
+        <label>Difficulty:
+          <select name="difficulty">
+            <option value="beginner" <%= event.difficulty === 'beginner' ? 'selected' : '' %>>Beginner</option>
+            <option value="intermediate" <%= event.difficulty === 'intermediate' ? 'selected' : '' %>>Intermediate</option>
+            <option value="advance" <%= event.difficulty === 'advance' ? 'selected' : '' %>>Advance</option>
+          </select>
+        </label>
+        <label>Children Friendly:
+          <select name="children_friendly">
+            <option value="1" <%= event.children_friendly === 1 ? 'selected' : '' %>>Yes</option>
+            <option value="0" <%= event.children_friendly === 0 ? 'selected' : '' %>>No</option>
+          </select>
+        </label>
+        <label>Max Capacity: <input type="number" name="max_capacity" value="<%= event.max_capacity %>" min="1" required></label>
+        <p><strong>Full Price Ticket Count:</strong> <%= event.full_price_count %></p>
+        <label>Full Price Ticket Price: <input type="number" step="0.01" name="full_price_price" value="<%= event.full_price_price %>" min="0" required></label>
+        <div id="child-ticket-fields">
+          <p><strong>Child Ticket Count:</strong> <%= event.child_price_count %></p>
+          <label>Child Ticket Price: 
+            <input type="number" step="0.01" name="child_price" value="<%= event.child_price %>" min="0" required>
+          </label>
+        </div>
+        <button type="submit">Submit Changes</button>
+      <% } %>
 
-<script>
-  let isFormChanged = false;
-  const justCreated = '<%= justCreated ? "true" : "false" %>';
+      <% if (readOnly) { %>
+        <h2>Attendees</h2>
+        <% if (attendees.length === 0) { %>
+          <p>No one has booked this class yet.</p>
+        <% } else { %>
+          <table class="attendee-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Adult Tickets</th>
+                <th>Child Tickets</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% attendees.forEach(att => { %>
+                <tr>
+                  <td><%= att.attendee_name %></td>
+                  <td><%= att.full_price_qty %></td>
+                  <td><%= att.child_qty %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        <% } %>
+      <% } %>
+    </form>
 
-  const form = document.getElementById('edit-form');
-  const inputs = form.querySelectorAll('input, textarea, select');
-  inputs.forEach(input => {
-    input.addEventListener('change', () => {
-      isFormChanged = true;
+    <a href="/organiser" id="back-button">← Back to Organiser Home</a>
+  </div>
+
+  <script>
+    let isFormChanged = false;
+    const justCreated = '<%= justCreated ? "true" : "false" %>';
+
+    const form = document.getElementById('edit-form');
+    const inputs = form.querySelectorAll('input, textarea, select');
+    inputs.forEach(input => {
+      input.addEventListener('change', () => {
+        isFormChanged = true;
+      });
     });
-  });
 
-  const backBtn = document.getElementById('back-button');
-  backBtn.addEventListener('click', async function (e) {
-    if (justCreated === 'true' && !isFormChanged) {
-      const confirmed = confirm("No changes detected. Return and delete this draft?");
-      if (!confirmed) {
-        e.preventDefault();
-        return;
-      }
+    const backBtn = document.getElementById('back-button');
+    backBtn.addEventListener('click', async function (e) {
+      if (justCreated === 'true' && !isFormChanged) {
+        const confirmed = confirm("No changes detected. Return and delete this draft?");
+        if (!confirmed) {
+          e.preventDefault();
+          return;
+        }
 
-      // Delete draft from backend via fetch
-      const eventId = "<%= event.id %>";
-      await fetch(`/organiser/events/delete/${eventId}`, {
-        method: 'POST'
-      });
-    } else if (isFormChanged) {
-      const confirmed = confirm("You have unsaved changes. Are you sure you want to go back?");
-      if (!confirmed) {
-        e.preventDefault();
-      }
-      else if (justCreated == 'true')
-      {
         const eventId = "<%= event.id %>";
-      await fetch(`/organiser/events/delete/${eventId}`, {
-        method: 'POST'
-      });
+        await fetch(`/organiser/events/delete/${eventId}`, { method: 'POST' });
+      } else if (isFormChanged) {
+        const confirmed = confirm("You have unsaved changes. Are you sure you want to go back?");
+        if (!confirmed) {
+          e.preventDefault();
+        } else if (justCreated === 'true') {
+          const eventId = "<%= event.id %>";
+          await fetch(`/organiser/events/delete/${eventId}`, { method: 'POST' });
+        }
+      }
+    });
+
+    const childrenFriendlySelect = document.querySelector('select[name="children_friendly"]');
+    const childFieldsDiv = document.getElementById('child-ticket-fields');
+    function toggleChildFields() {
+      if (childrenFriendlySelect?.value === '0') {
+        childFieldsDiv.style.display = 'none';
+      } else {
+        childFieldsDiv.style.display = 'block';
       }
     }
-  });
 
-    // Reference the select input
-  const childrenFriendlySelect = document.querySelector('select[name="children_friendly"]');
-  const childFieldsDiv = document.getElementById('child-ticket-fields');
-
-  // Function to toggle visibility
-  function toggleChildFields() {
-    if (childrenFriendlySelect.value === '0') {
-      childFieldsDiv.style.display = 'none';
-    } else {
-      childFieldsDiv.style.display = 'block';
+    if (childrenFriendlySelect) {
+      toggleChildFields();
+      childrenFriendlySelect.addEventListener('change', toggleChildFields);
     }
-  }
-
-  // Initial toggle based on the current value
-  toggleChildFields();
-
-  // Re-toggle when selection changes
-  childrenFriendlySelect.addEventListener('change', toggleChildFields);
-</script>
+  </script>
+</body>
+</html>
