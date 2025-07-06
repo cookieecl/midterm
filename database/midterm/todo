@@ -1,5 +1,0 @@
-1. if i press back on the browser back after creating a new event, and refresh the untitled event is created
-2. doesnt show the number of available ticket but the tickets booked and max ticket available plus the percentage booked (my implementation)
-3. draft doesnt show published at but updated at
-4. add time in the time when the event start to end?
-5. have already made the extension to be add additional functionality, but i want password implementation (later)

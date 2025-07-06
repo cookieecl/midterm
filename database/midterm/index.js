@@ -1,24 +1,32 @@
 /**
 * index.js
-* This is your main app entry point
+* Main entry point
+* Sets up routing, middleware, database, and central error handling
 */
 
-// Set up express, bodyparser and EJS
+// Set up express, bodyparser, EJS, and middleware
 const express = require('express');
 const session = require('express-session');
-const { router: authRouter, ensureOrganiser } = require('./routes/auth');
 const app = express();
 const port = 3000;
 var bodyParser = require("body-parser");
+const { router: authRouter, ensureOrganiser } = require('./routes/auth');
+
+// Middleware to parse URL-encoded request from login page
 app.use(bodyParser.urlencoded({ extended: true }));
-app.set('view engine', 'ejs'); // set the app to use ejs for rendering
-app.use(express.static(__dirname + '/public')); // set location of static files
+
+// Set the app to use ejs for rendering views (as the template engine)
+app.set('view engine', 'ejs');
+
+// Set location of static files
+app.use(express.static(__dirname + '/public'));
+
+// Configure and use the session middleware (for user login sessions)
 app.use(session({
-  secret: 'your_secret_key_here',
+  secret: 'secretkey',
   resave: false,
   saveUninitialized: false,
 }));
-
 
 // Set up SQLite
 // Items in the global namespace are accessible throught out the node application
@@ -26,15 +34,14 @@ const sqlite3 = require('sqlite3').verbose();
 global.db = new sqlite3.Database('./database.db',function(err){
     if(err){
         console.error(err);
-        process.exit(1); // bail out we can't connect to the DB
+        process.exit(1); // Bail out we can't connect to the DB
     } else {
         console.log("Database connected");
-        global.db.run("PRAGMA foreign_keys=ON"); // tell SQLite to pay attention to foreign key constraints
+        global.db.run("PRAGMA foreign_keys=ON"); // Tell SQLite to pay attention to foreign key constraints
     }
 });
 
 // Handle requests to the home page 
-
 app.get('/', (req, res) => {
   global.db.get('SELECT site_name, site_description FROM settings LIMIT 1', (err, settings) => {
     if (err) {
@@ -45,7 +52,6 @@ app.get('/', (req, res) => {
     }
   });
 });
-
 
 app.use('/images', express.static(__dirname + '/images'));
 

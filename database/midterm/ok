@@ -1,0 +1,96 @@
+/**
+ * index.js
+ * Main entry point
+ * Sets up routing, middleware, database connection, and central error handling
+ */
+
+// Import express and other middleware
+const express = require('express');
+const session = require('express-session');
+const { router: authRouter, ensureOrganiser } = require('./routes/auth');
+const app = express();
+const port = 3000;
+var bodyParser = require("body-parser");
+
+// Middleware to parse URL-encoded request bodies (from forms)
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// Set EJS as the template engine for rendering views
+app.set('view engine', 'ejs');
+
+// Serve static files (CSS, JS, images) from the 'public' folder
+app.use(express.static(__dirname + '/public'));
+
+// Session middleware for user login sessions
+app.use(session({
+  secret: 'your_secret_key_here', // Replace with a strong secret in production
+  resave: false,
+  saveUninitialized: false,
+}));
+
+// Setup SQLite database connection
+// Attach the database object to the global namespace so it can be used throughout the app
+const sqlite3 = require('sqlite3').verbose();
+global.db = new sqlite3.Database('./database.db', function(err) {
+  if (err) {
+    console.error(err);
+    process.exit(1); // Exit app if DB connection fails
+  } else {
+    console.log("Database connected");
+    // Enable foreign key support in SQLite
+    global.db.run("PRAGMA foreign_keys=ON");
+  }
+});
+
+// Route handler for home page ('/')
+app.get('/', (req, res) => {
+  // Fetch site name and description from the settings table
+  global.db.get('SELECT site_name, site_description FROM settings LIMIT 1', (err, settings) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send("Database error");
+    } else {
+      // Render 'home' view with settings data
+      res.render('home', { settings });
+    }
+  });
+});
+
+// Serve static images from the 'images' folder
+app.use('/images', express.static(__dirname + '/images'));
+
+// Built-in middleware to parse URL-encoded bodies (alternative to bodyParser)
+app.use(express.urlencoded({ extended: true }));
+
+// Mount authentication routes
+app.use(authRouter);
+
+// Protect organiser routes using ensureOrganiser middleware
+app.use('/organiser', ensureOrganiser, require('./routes/organiser'));
+
+// Mount attendee routes
+const attendeeRoutes = require('./routes/attendee');
+app.use('/attendee', attendeeRoutes);
+
+// Mount site settings routes under '/organiser/settings'
+const settingRoutes = require('./routes/settings');
+app.use('/organiser/settings', settingRoutes);
+
+// Mount registration routes at root '/'
+const registerRoutes = require('./routes/register');
+app.use('/', registerRoutes);
+
+// Central error handler middleware — catches errors passed with next(err)
+app.use((err, req, res, next) => {
+  console.error("Central error handler caught:", err.stack);
+  res.status(500).send("Internal Server Error.");
+});
+
+// (Commented out example user routes for potential future use)
+// const usersRoutes = require('./routes/users');
+// app.use('/users', usersRoutes);
+
+// Start the server, listen on configured port
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`);
+});

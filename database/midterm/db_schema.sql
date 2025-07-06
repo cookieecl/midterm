@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS events (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
     description TEXT NOT NULL,
-    status TEXT NOT NULL, --either draft or published (idk change to bool or no)
+    status TEXT NOT NULL,
     event_date TEXT NOT NULL,
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL,
