@@ -6,7 +6,7 @@
 /*   By: aputri-a <aputri-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 20:21:12 by aputri-a          #+#    #+#             */
-/*   Updated: 2025/07/02 20:22:09 by aputri-a         ###   ########.fr       */
+/*   Updated: 2025/07/08 13:44:43 by aputri-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,4 +120,9 @@ int		ClapTrap::getHitPoints()
 int		ClapTrap::getEnergyPoints()
 {
 	return (energyPoints);
+}
+
+int		ClapTrap::getAttackDamage()
+{
+	return (attackDmg);
 }

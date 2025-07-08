@@ -6,7 +6,7 @@
 /*   By: aputri-a <aputri-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 20:51:25 by aputri-a          #+#    #+#             */
-/*   Updated: 2025/07/02 20:51:25 by aputri-a         ###   ########.fr       */
+/*   Updated: 2025/07/08 19:08:18 by aputri-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,8 @@ void	MateriaSource::learnMateria(AMateria* m)
 	}
 	else
 	{
-		std::cout << "Materia library is full, can't learn any more materia, so materia " << m->getType() << " has been deleted"<< std::endl;
+		std::cout << "Materia library is full, can't learn any more materia, so materia " << m->getType() << " will be deleted"<< std::endl;
+		delete m;
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: aputri-a <aputri-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 20:49:33 by aputri-a          #+#    #+#             */
-/*   Updated: 2025/07/02 20:49:33 by aputri-a         ###   ########.fr       */
+/*   Updated: 2025/07/08 15:52:08 by aputri-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,5 +53,10 @@ void	Animal::makeSound() const
 const std::string	Animal::getType() const
 {
 	return (type);
+}
+
+Brain*	Animal::getBrain() const
+{
+	return (NULL);
 }
 

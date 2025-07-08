@@ -6,7 +6,7 @@
 /*   By: aputri-a <aputri-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 20:21:25 by aputri-a          #+#    #+#             */
-/*   Updated: 2025/07/02 20:21:25 by aputri-a         ###   ########.fr       */
+/*   Updated: 2025/07/08 14:54:04 by aputri-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ class	FragTrap : virtual public ClapTrap
 	public:
 		FragTrap();
 		FragTrap(std::string _name);
+		FragTrap(int diamondTrap);
 		virtual ~FragTrap();
 
 		FragTrap(const FragTrap& other);

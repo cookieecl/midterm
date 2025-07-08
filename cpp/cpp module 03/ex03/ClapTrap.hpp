@@ -6,7 +6,7 @@
 /*   By: aputri-a <aputri-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 20:21:15 by aputri-a          #+#    #+#             */
-/*   Updated: 2025/07/02 20:21:15 by aputri-a         ###   ########.fr       */
+/*   Updated: 2025/07/08 13:44:01 by aputri-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ class	ClapTrap
 
 		int				getHitPoints();
 		int				getEnergyPoints();
+		int				getAttackDamage();
 
 	protected:
 		std::string	name;

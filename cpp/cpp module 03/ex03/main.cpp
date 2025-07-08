@@ -6,7 +6,7 @@
 /*   By: aputri-a <aputri-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 20:21:28 by aputri-a          #+#    #+#             */
-/*   Updated: 2025/07/02 20:21:28 by aputri-a         ###   ########.fr       */
+/*   Updated: 2025/07/08 13:57:35 by aputri-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,46 @@ int	main()
 {
 	std::cout << std::endl << MAGENTA << "[1]Test default constructor" << RESET << std::endl;
 	DiamondTrap	defaultDiamondTrap;
+
+	std::cout << "Should have 100 hitpoints, result: " << defaultDiamondTrap.getHitPoints() << std::endl;
+	if (defaultDiamondTrap.getHitPoints() != 100)
+	{
+		std::cout << RED << "Test failed, program abort" << RESET << std::endl;
+		return (0);
+	}
+	else
+	{
+		std::cout << YELLOW << "Test passed!" << RESET << std::endl;
+	}
+
+	std::cout << "Should have 50 energypoints, result: " << defaultDiamondTrap.getEnergyPoints() << std::endl;
+	if (defaultDiamondTrap.getEnergyPoints() != 50)
+	{
+		std::cout << RED << "Test failed, program abort" << RESET << std::endl;
+		return (0);
+	}
+	else
+	{
+		std::cout << YELLOW << "Test passed!" << RESET << std::endl;
+	}
+
+	std::cout << "Should have 30 attackdamage, result: " << defaultDiamondTrap.getAttackDamage() << std::endl;
+	if (defaultDiamondTrap.getAttackDamage() != 30)
+	{
+		std::cout << RED << "Test failed, program abort" << RESET << std::endl;
+		return (0);
+	}
+	else
+	{
+		std::cout << YELLOW << "Test passed!" << RESET << std::endl;
+	}
 	defaultDiamondTrap.attack("boss");
 
 	std::cout << std::endl << MAGENTA << "[2]Test copy constructor" << RESET << std::endl;
 	DiamondTrap	copy(defaultDiamondTrap);
 	copy.attack("boss");
-	std::cout << "Copy should have 98 energy points, result: " << copy.getEnergyPoints() << std::endl;
-	if (copy.getEnergyPoints() != 98)
+	std::cout << "Copy should have 48 energy points, result: " << copy.getEnergyPoints() << std::endl;
+	if (copy.getEnergyPoints() != 48)
 	{
 		std::cout << RED << "Test failed, program abort" << RESET << std::endl;
 		return (0);
@@ -35,8 +68,8 @@ int	main()
 	std::cout << std::endl << MAGENTA << "[3]Test copy assignment (default = copy)" << RESET << std::endl;
 	defaultDiamondTrap = copy;
 	defaultDiamondTrap.attack("boss");
-	std::cout << "Default should have 97 energy points, result: " << defaultDiamondTrap.getEnergyPoints() << std::endl;
-	if (defaultDiamondTrap.getEnergyPoints() != 97)
+	std::cout << "Default should have 47 energy points, result: " << defaultDiamondTrap.getEnergyPoints() << std::endl;
+	if (defaultDiamondTrap.getEnergyPoints() != 47)
 	{
 		std::cout << RED << "Test failed, program abort" << RESET << std::endl;
 		return (0);

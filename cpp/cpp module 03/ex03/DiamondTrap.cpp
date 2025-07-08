@@ -6,16 +6,15 @@
 /*   By: aputri-a <aputri-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 20:21:17 by aputri-a          #+#    #+#             */
-/*   Updated: 2025/07/02 20:21:18 by aputri-a         ###   ########.fr       */
+/*   Updated: 2025/07/08 14:55:06 by aputri-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "DiamondTrap.hpp"
 
 DiamondTrap::DiamondTrap()
-: ClapTrap("default_clap_name")
+: ClapTrap("default_clap_name"), ScavTrap(), FragTrap(1)
 {
-	name = "default";
 	hitPoints = FragTrap::hitPoints;
 	energyPoints = ScavTrap::energyPoints;
 	attackDmg = FragTrap::attackDmg;
@@ -23,7 +22,7 @@ DiamondTrap::DiamondTrap()
 }
 
 DiamondTrap::DiamondTrap(std::string _name)
-: ClapTrap(_name + "_clap_name")
+: ClapTrap(_name + "_clap_name"), ScavTrap(), FragTrap(1)
 {
 	name = _name;
 	hitPoints = FragTrap::hitPoints;

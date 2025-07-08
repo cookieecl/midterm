@@ -6,7 +6,7 @@
 /*   By: aputri-a <aputri-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 20:50:45 by aputri-a          #+#    #+#             */
-/*   Updated: 2025/07/02 20:50:45 by aputri-a         ###   ########.fr       */
+/*   Updated: 2025/07/08 16:11:44 by aputri-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ AMateria::AMateria(const AMateria& other)
 AMateria&	AMateria::operator=(const AMateria &other)
 {
 	std::cout << BLUE << "AMateria copy assignment operator called" << RESET << std::endl;
+	if (this != &other)
+		return (*this);
 	return (*this);
 }
 

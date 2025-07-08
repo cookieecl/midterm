@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: aputri-a <aputri-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/02 20:21:22 by aputri-a          #+#    #+#             */
-/*   Updated: 2025/07/08 14:54:42 by aputri-a         ###   ########.fr       */
+/*   Created: 2025/07/02 20:20:19 by aputri-a          #+#    #+#             */
+/*   Updated: 2025/07/02 20:20:19 by aputri-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,16 +28,6 @@ FragTrap::FragTrap(std::string _name)
 	energyPoints = 100;
 	attackDmg = 30;
 	std::cout << GREEN << "FragTrap " << _name << " constructor called" << RESET << std::endl;
-}
-
-FragTrap::FragTrap(int diamondTrap)
-: ClapTrap()
-{
-	hitPoints = 100;
-	if (!diamondTrap)
-		energyPoints = 100;
-	attackDmg = 30;
-	std::cout << GREEN << "FragTrap default constructor called" << RESET << std::endl;
 }
 
 FragTrap::~FragTrap()

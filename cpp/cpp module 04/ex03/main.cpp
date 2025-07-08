@@ -6,7 +6,7 @@
 /*   By: aputri-a <aputri-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 20:51:22 by aputri-a          #+#    #+#             */
-/*   Updated: 2025/07/02 20:51:23 by aputri-a         ###   ########.fr       */
+/*   Updated: 2025/07/08 19:08:00 by aputri-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ int	main()
 	AMateria* tmp;
 
 	std::cout << MAGENTA << "[1] Test MateriaSource" << RESET << std::endl;
-
 	srcFull = new MateriaSource();
+	
 	std::cout << std::endl << MAGENTA << "Learning non existent materia" << RESET << std::endl;
 	srcFull->learnMateria(NULL);
 
@@ -46,7 +46,7 @@ int	main()
 	else
 	{
 		std::cout << RED << "Test Failed!" << RESET << std::endl;
-		std::exit(0);
+		return (1);
 	}
 	
 	std::cout << std::endl << MAGENTA << "Test creating materia from a materia that hasn't been learnt yet" << RESET << std::endl;
@@ -58,7 +58,7 @@ int	main()
 	else
 	{
 		std::cout << RED << "Test Failed!" << RESET << std::endl;
-		std::exit(0);
+		return (1);
 	}
 
 	std::cout << std::endl << MAGENTA << "Test creating materia from a materia that is learnt, but in uppercase" << RESET << std::endl;
@@ -68,7 +68,7 @@ int	main()
 	else
 	{
 		std::cout << RED << "Test Failed!" << RESET << std::endl;
-		std::exit(0);
+		return (1);
 	}
 
 	std::cout << std::endl << MAGENTA << "Creating valid materia which is learnt" << RESET << std::endl;
@@ -78,8 +78,9 @@ int	main()
 	else
 	{
 		std::cout << RED << "Test Failed!" << RESET << std::endl;
-		std::exit(0);
+		return (1);
 	}
+	delete tmp;
 
 	std::cout << std::endl << MAGENTA << "Create deep copy of materiaSrc" << RESET << std::endl;
 	MateriaSource*	srcCopy = new MateriaSource(*dynamic_cast<MateriaSource*>(src));
@@ -90,6 +91,8 @@ int	main()
 	std::cout << "The original result: ";
 	tmp = src->createMateria("ice");
 
+	delete tmp;
+
 	std::cout << "The copy result: ";
 	tmp = srcCopy->createMateria("ice");
 
@@ -98,7 +101,7 @@ int	main()
 	else
 	{
 		std::cout << RED << "Test Failed!" << RESET << std::endl;
-		std::exit(0);
+		return (1);
 	}
 
 	std::cout << std::endl << MAGENTA << "[2] Test Character" << RESET << std::endl;
@@ -110,14 +113,14 @@ int	main()
 	else
 	{
 		std::cout << RED << "Test Failed!" << RESET << std::endl;
-		std::exit(0);
+		return (1);
 	}
 	if (bob->getName() == "bob")
 		std::cout << YELLOW << "Test passed!" << RESET << std::endl;
 	else
 	{
 		std::cout << RED << "Test Failed!" << RESET << std::endl;
-		std::exit(0);
+		return (1);
 	}
 
 	std::cout << std::endl << MAGENTA << "Make an array of Materia for testing purposes" << RESET << std::endl;
@@ -145,7 +148,7 @@ int	main()
 	else
 	{
 		std::cout << RED << "Test Failed!" << RESET << std::endl;
-		std::exit(0);
+		return (1);
 	}
 
 	std::cout << std::endl << MAGENTA << "Unequip invalid materia" << RESET << std::endl;

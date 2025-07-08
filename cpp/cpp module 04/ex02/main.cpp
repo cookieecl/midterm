@@ -6,7 +6,7 @@
 /*   By: aputri-a <aputri-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 20:50:29 by aputri-a          #+#    #+#             */
-/*   Updated: 2025/07/02 20:50:29 by aputri-a         ###   ########.fr       */
+/*   Updated: 2025/07/08 15:53:44 by aputri-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,11 @@ int	main()
 	Brain*	brain = animalArr[6]->getBrain();
 	for (int i = 0; i < 100; ++i)
 	{
-		brain->addIdea("idea " + std::to_string(i + 1));
+		brain->addIdea("[this is an idea]");
 	}
 
 	std::cout << std::endl << MAGENTA << "Adding idea after full" << RESET << std::endl;
-	brain->addIdea("idea " + std::to_string(101));
+	brain->addIdea("[this is an idea]");
 
 	std::cout << std::endl << MAGENTA << "Copy full animal and check the brain idea" << RESET << std::endl;
 	Dog	*dog1 = new Dog();

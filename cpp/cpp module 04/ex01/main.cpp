@@ -6,7 +6,7 @@
 /*   By: aputri-a <aputri-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 20:49:51 by aputri-a          #+#    #+#             */
-/*   Updated: 2025/07/02 20:58:09 by aputri-a         ###   ########.fr       */
+/*   Updated: 2025/07/08 15:56:00 by aputri-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,11 @@ int	main()
 		delete animalArr[i];
 		std::cout << std::endl;
 	}
+
+	std::cout << MAGENTA << "[5] Test animal constructor" << RESET << std::endl;
+	Animal	a;
+	Animal*	aDynamic = new Animal("dynamic");
+	delete aDynamic;
 
 	return (0);
 }

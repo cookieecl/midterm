@@ -1,40 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Animal.hpp                                         :+:      :+:    :+:   */
+/*   ScavTrap.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aputri-a <aputri-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/02 20:49:35 by aputri-a          #+#    #+#             */
-/*   Updated: 2025/07/08 15:52:14 by aputri-a         ###   ########.fr       */
+/*   Created: 2025/07/02 20:20:29 by aputri-a          #+#    #+#             */
+/*   Updated: 2025/07/02 20:20:33 by aputri-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
-#ifndef ANIMAL_HPP
-#define ANIMAL_HPP
+#ifndef SCAVTRAP_HPP
+#define SCAVTRAP_HPP
 
 #include <iostream>
 #include <string>
-#include "Brain.hpp"
+#include "ClapTrap.hpp"
 
-class	Animal
+class	ScavTrap : public ClapTrap
 {
 	public:
-		Animal();
-		Animal(std::string _type);
-		virtual ~Animal();
+		ScavTrap();
+		ScavTrap(std::string _name);
+		~ScavTrap();
 
-		Animal(const Animal& other);
-		Animal&	operator=(const Animal &other);
+		ScavTrap(const ScavTrap& other);
+		ScavTrap&	operator=(const ScavTrap &other);
 
-		virtual void	makeSound() const;
-		virtual Brain*	getBrain() const;
+		void	attack(const std::string& target);
+		void	guardGate();
 
-		const std::string	getType() const;
-
-	protected:
-		std::string	type;
+	private:
 
 };
 
